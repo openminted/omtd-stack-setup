@@ -1,0 +1,1 @@
+zk://{% for mesos_master in groups.mesos_masters %}{{ hostvars[mesos_master]['ansible_default_ipv4']['address'] }}:2181{% if not loop.last %},{% endif %}{% endfor %}/mesos

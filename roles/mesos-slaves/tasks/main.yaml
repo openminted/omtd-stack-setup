@@ -1,0 +1,24 @@
+- name: Disable Zookeeper and mesos-master services
+  service:
+      name: "{{ item }}"
+      enabled: no
+      state: stopped
+  with_items:
+      - zookeeper
+      - mesos-master
+
+- name: Specify mesos-slave ip file
+  copy:
+      content: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}"
+      dest: /etc/mesos-slave/ip
+      owner: root
+  notify:
+      - restart mesos-slave
+
+- name: Specify mesos-slave hostname file
+  copy:
+      content: "{{ inventory_hostname }}"
+      dest: /etc/mesos-slave/hostname
+      owner: root
+  notify:
+      - restart mesos-slave

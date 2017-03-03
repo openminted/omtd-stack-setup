@@ -1,0 +1,48 @@
+- name: Specify master ID of Zookeeper configuration
+  copy:
+      # Lets a have serial number for each master as ID.
+      content: "{{ groups.mesos_masters.index(inventory_hostname) + 1}}"
+      dest: /etc/zookeeper/conf/myid
+      force: yes
+
+- name: Add Zookeeper configuration
+  lineinfile:
+      dest: /etc/zookeeper/conf/zoo.cfg
+      regexp: '^server.{{ item.0 + 1 }}='
+      line: "server.{{ item.0 + 1}}={{ hostvars[item.1].ansible_default_ipv4.address }}:2888:3888"
+      state: present
+      insertafter: '^server.{{ item.0 }}='
+  with_indexed_items: "{{ groups.mesos_masters }}"
+  notify:
+      - restart zookeeper
+      - restart mesos-master
+
+- name: Add number of hosts in the Quorum
+  copy:
+      content: "{{ quorum_size }}"
+      dest: /etc/mesos-master/quorum
+      force: yes
+  notify:
+      - restart mesos-master
+
+- name: Specify mesos-master ip file
+  copy:
+      content: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}"
+      dest: /etc/mesos-master/ip
+      force: yes
+  notify:
+      - restart mesos-master
+
+- name: Specify mesos-master hostname file
+  copy:
+      content: "{{ inventory_hostname }}"
+      dest: /etc/mesos-master/hostname
+      force: yes
+  notify:
+      - restart mesos-master
+
+- name: Disable mesos-slave service
+  service:
+      name: mesos-slave
+      enabled: no
+      state: stopped

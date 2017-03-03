@@ -1,0 +1,9 @@
+- hosts: mesos_masters
+  remote_user: root
+  roles:
+      - role: mesos-masters
+
+- hosts: mesos_slaves
+  remote_user: root
+  roles:
+      - role: mesos-slaves

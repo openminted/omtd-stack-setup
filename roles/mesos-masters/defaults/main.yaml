@@ -1,0 +1,2 @@
+# Size of Zookeeper Quorum
+quorum_size: 1

@@ -1,0 +1,5 @@
+[mesos_masters]
+# List hosts of mesos masters.
+
+[mesos_slaves]
+# List hosts of mesos slaves.
