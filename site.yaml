@@ -1,3 +1,11 @@
+- hosts: all
+  remote_user: root
+  gather_facts: no
+  tasks:
+      - name: Install python
+        raw: "apt-get update -y && apt-get install {{ python_package }} -y"
+        when: "{{ install_python }}"
+
 - hosts: mesos_masters
   remote_user: root
   roles:
