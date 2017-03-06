@@ -1,0 +1,8 @@
+# True if python is needed to be installed first.
+install_python: False
+
+# Distro of python which has to be installed.
+python_package: python
+
+# Path to python.
+ansible_python_interpreter: /usr/bin/python
