@@ -6,4 +6,5 @@
 - hosts: mesos_slaves
   remote_user: root
   roles:
+      - lexrus.ansible-role-docker
       - role: mesos-slaves

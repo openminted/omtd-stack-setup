@@ -15,6 +15,16 @@
   notify:
       - restart mesos-slave
 
+- name: Enable docker on mesos-slave
+  copy:
+      content: docker,mesos
+      dest: /etc/mesos-slave/containerizers
+
+- name: Set executor timeout
+  copy:
+      content: 5mins
+      dest: /etc/mesos-slave/executor_registration_timeout
+
 - name: Specify mesos-slave hostname file
   copy:
       content: "{{ inventory_hostname }}"
