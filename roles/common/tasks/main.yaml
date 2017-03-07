@@ -1,24 +1,3 @@
-- name: Add Java apt-repository
-  apt_repository:
-      repo: ppa:webupd8team/java
-      state: present
-      update_cache: yes
-
-- name: Accept Oracle License
-  debconf:
-      name: oracle-java8-installer
-      question: shared/accepted-oracle-license-v1-1
-      value: 'true'
-      vtype: select
-
-- name: Install Java 8 packages
-  apt:
-      name: "{{ item }}"
-      state: latest
-  with_items:
-      - oracle-java8-installer
-      - oracle-java8-set-default 
-
 - name: Add apt-key
   apt_key:
       keyserver: hkp://keyserver.ubuntu.com:80
