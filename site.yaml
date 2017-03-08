@@ -16,3 +16,8 @@
   roles:
       - lexrus.ansible-role-docker
       - role: mesos-slaves
+
+- hosts: chronos
+  remote_user: root
+  roles:
+      - role: chronos

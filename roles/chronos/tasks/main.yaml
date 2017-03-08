@@ -1,0 +1,28 @@
+- name: Install chronos
+  apt:
+      name: chronos
+      state: latest
+  register: chronos_installed
+
+- name: Add hostname file
+  copy:
+      content: "{{ inventory_hostname }}"
+      dest: /etc/chronos/conf/hostname
+  notify:
+      - restart chronos
+
+- name: Add http_port file
+  copy:
+      content: "{{ chronos_http_port }}"
+      dest: /etc/chronos/conf/http_port
+  when: chronos_http_port is defined
+  notify:
+      - restart chronos
+
+- name: Add https_port file
+  copy:
+      content: "{{ chronos_https_port }}"
+      dest: /etc/chronos/conf/https_port
+  when: chronos_https_port is defined
+  notify:
+      - restart chronos

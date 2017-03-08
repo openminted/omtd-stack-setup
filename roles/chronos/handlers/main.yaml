@@ -1,0 +1,5 @@
+- name: restart chronos
+  service:
+      name: chronos
+      enabled: yes
+      state: restarted
