@@ -1,5 +1,5 @@
-- name: restart mesos-master
+- name: restart zookeeper
   service:
-      name: mesos-master
-      state: restarted
+      name: zookeeper
       enabled: yes
+      state: restarted

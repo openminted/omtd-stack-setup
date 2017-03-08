@@ -1,3 +1,9 @@
+- name: Install Mesos
+  apt:
+      name: mesos
+      state: latest
+  register: mesos_installed
+
 - name: Specify master ID of Zookeeper configuration
   copy:
       # Lets a have serial number for each master as ID.
