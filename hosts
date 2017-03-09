@@ -3,3 +3,6 @@
 
 [mesos_slaves]
 # List hosts of mesos slaves.
+
+[chronos]
+# List hosts that run chronos.
