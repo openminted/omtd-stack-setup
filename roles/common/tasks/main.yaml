@@ -11,6 +11,11 @@
       filename: mesosphere
       update_cache: yes
 
+- name: Create /etc/mesos directory
+  file:
+      path: /etc/mesos
+      state: directory
+
 - name: Point to the Zookeeper Quorum
   template:
       src: zk.j2
