@@ -4,5 +4,10 @@ install_python: False
 # Distro of python which has to be installed.
 python_package: python
 
-# Path to python.
 ansible_python_interpreter: /usr/bin/python
+
+# Exported directory on nfs server.
+exported_dir: /var/share
+
+# Mountable directories on nfs clients.
+mountable_dir: /mnt/nfs/share

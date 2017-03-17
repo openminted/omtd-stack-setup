@@ -1,3 +1,8 @@
+- hosts: nfs_server
+  remote_user: root
+  roles:
+      - role: nfs
+
 - hosts: all
   remote_user: root
   gather_facts: no

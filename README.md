@@ -7,8 +7,9 @@ based on this [guide](https://www.digitalocean.com/community/tutorials/how-to-co
 # Inventory Configuration
 
 You have to configure your inventory to specify the hosts belonging
-to every group. This playbook requires three groups of hosts:
+to every group. This playbook requires four groups of hosts:
 
+- `nfs_server`: An nfs server.
 - `mesos_masters`: The list of mesos_masters to manage the cluster.
   One of them is the leader master elected by Zookeeper and the rest
   are standby.

@@ -1,3 +1,6 @@
+[nfs_server]
+# Specify one nfs server.
+
 [mesos_masters]
 # List hosts of mesos masters.
 

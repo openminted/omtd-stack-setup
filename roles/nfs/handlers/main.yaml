@@ -1,0 +1,8 @@
+- name: reload exports
+  command: exportfs -a
+
+- name: restart nfs-server
+  service:
+      name: nfs-kernel-server
+      state: restarted
+      enabled: yes

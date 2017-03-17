@@ -1,0 +1,22 @@
+- fail:
+    msg: You need to specify one host.
+  when: "{{ groups.nfs_server|length != 1}}"
+
+- name: Ensure shared directory
+  file:
+      dest: "{{ exported_dir }}"
+      state: directory
+
+- name: Install nfs-server
+  apt:
+      name: nfs-kernel-server
+      state: latest
+
+- name: Configure nfs exports
+  template:
+      src: exports.j2
+      dest: /etc/exports
+      force: yes
+  notify:
+      - reload exports
+      - restart nfs-server
