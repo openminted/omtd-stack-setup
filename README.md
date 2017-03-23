@@ -23,4 +23,13 @@ variable to use python3.
 
 
 # Setup
-Run ansible-playbook -i hosts site.yaml
+Install any required playbooks:
+
+```console
+sudo ansible-galaxy install -r requirements.yaml
+```
+Setup cluster:
+
+```console
+ansible-playbook -i hosts site.yaml
+```
