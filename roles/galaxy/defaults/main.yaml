@@ -1,0 +1,23 @@
+# Directory to host galaxy code.
+galaxy_directory: /srv/galaxy
+
+# Directory which holds object store data. This directory is mounted to an nfs
+# server.
+object_store_directory: /root/galaxy_dir
+
+# Directory which is the galaxy job working directory. It's parent is
+# `object_store_directory`.
+job_working_directory: jobs_directory
+
+# Directory which holds datasets of workflows. It's parent is
+# `object_store_directory`.
+files_directory: files
+
+# tmp directory of jobs. It's parent is `object_store_directory`.
+tmp_directory: tmp
+
+# Galaxy remote repo.
+galaxy_repo: https://github.com/galaxyproject/galaxy
+
+# Version of the repository to check out. A branch, a tag or a commit hash.
+galaxy_version: release_16.10

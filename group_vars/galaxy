@@ -1,0 +1,13 @@
+apache_vhosts:
+  - servername: "{{ inventory_hostname }}"
+    extra_parameters: |
+        RewriteEngine on
+        RewriteRule ^(.*) http://localhost:8080$1 [P]
+
+apache_mods_enabled:
+  - rewrite.load
+  - proxy.load
+  - proxy_http.load
+  - proxy.conf
+
+apache_remove_default_vhost: True

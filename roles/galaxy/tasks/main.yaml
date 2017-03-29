@@ -1,0 +1,52 @@
+- name: Install required packages
+  apt:
+      name: "{{ item }}"
+      state: latest
+  with_items:
+      - git
+      # Galaxy needs python 2.7.
+      - python
+
+- name: Clone galaxy repo
+  git:
+      repo: "{{ galaxy_repo }}"
+      dest: "{{ galaxy_directory }}"
+      clone: yes
+      version: "{{ galaxy_version }}"
+
+- name: Create object store
+  file:
+      path: "{{ object_store_directory }}"
+      state: directory
+
+- name: Create galaxy.ini file
+  copy:
+      remote_src: True
+      src: "{{ galaxy_directory }}/config/galaxy.ini.sample"
+      dest: "{{ galaxy_directory }}/config/galaxy.ini"
+
+- name: Set job working directory 
+  lineinfile:
+      dest: "{{ galaxy_directory }}/config/galaxy.ini"
+      regexp: ^(#?)+job_working_directory\s?=
+      line: "job_working_directory = {{ object_store_directory }}/{{ job_working_directory }}"
+      state: present
+
+- name: Set file directory
+  lineinfile:
+      dest: "{{ galaxy_directory }}/config/galaxy.ini" 
+      regexp: ^(#?)+file_path\s?=
+      line: "file_path = {{ object_store_directory }}/{{ files_directory }}"
+      state: present
+
+- name: Set tmp directory 
+  lineinfile:
+      dest: "{{ galaxy_directory }}/config/galaxy.ini"
+      regexp: ^(#?)+new_file_path\s?=
+      line: "new_file_path = {{ object_store_directory }}/{{ tmp_directory }}"
+      state: present
+
+- name: Start galaxy
+  command: sh run.sh --daemon
+  args:
+      chdir: "{{ galaxy_directory }}"

@@ -1,6 +1,9 @@
 [nfs_server]
 # Specify one nfs server.
 
+[nfs_clients]
+# List of nfs-clients. Hosts which share directories with nfs-server.
+
 [mesos_masters]
 # List hosts of mesos masters.
 
@@ -9,3 +12,6 @@
 
 [chronos]
 # List hosts that run chronos.
+
+[galaxy]
+# Host to setup a dev environment for galaxy.

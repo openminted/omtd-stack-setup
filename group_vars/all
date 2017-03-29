@@ -5,9 +5,3 @@ install_python: False
 python_package: python
 
 ansible_python_interpreter: /usr/bin/python
-
-# Exported directory on nfs server.
-exported_dir: /var/share
-
-# Mountable directories on nfs clients.
-mountable_dir: /mnt/nfs/share

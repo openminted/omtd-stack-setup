@@ -1,1 +1,2 @@
 - src: lexrus.ansible-role-docker
+- src: geerlingguy.apache

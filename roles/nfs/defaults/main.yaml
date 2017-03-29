@@ -1,2 +1,5 @@
 # NFS export options.
 export_options: rw,sync,no_subtree_check,no_root_squash
+
+# NFS clients. It includes mesos slaves and galaxy.
+nfs_clients: "{{ groups.mesos_slaves + groups.galaxy }}"
