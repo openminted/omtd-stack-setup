@@ -1,0 +1,16 @@
+- name: Install nfs-client
+  apt:
+      name: nfs-common
+      state: latest
+
+- name: Create mountable directory
+  file:
+      path: "{{ mountable_dir }}"
+      state: directory
+
+- name: Create mount points
+  mount:
+      name: "{{ mountable_dir }}"
+      src: "{{ groups.nfs_server[0] }}:{{ exported_dir }}"
+      state: mounted
+      fstype: nfs
