@@ -1,3 +1,7 @@
+- fail:
+    msg: You need to specify exactly one host running Galaxy.
+  when: "{{ groups.galaxy|length != 1}}"
+
 - name: Install required packages
   apt:
       name: "{{ item }}"
