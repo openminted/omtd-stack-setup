@@ -82,6 +82,7 @@
       remote_src: True
       src: "{{ sadi_directory }}/tools/SADI-Docker"
       dest: "{{ galaxy_directory }}/tools"
+  when: "{{ install_sadi }}"
 
 - name: Add SADI section to tool_conf.xml
   blockinfile:
