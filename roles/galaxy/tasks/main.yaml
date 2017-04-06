@@ -77,6 +77,12 @@
       src: "{{ galaxy_directory }}/config/tool_conf.xml.sample"
       dest: "{{ galaxy_directory }}/config/tool_conf.xml"
 
+- name: Copy SADI tools
+  copy:
+      remote_src: True
+      src: "{{ sadi_directory }}/tools/SADI-Docker"
+      dest: "{{ galaxy_directory }}/tools"
+
 - name: Add SADI section to tool_conf.xml
   blockinfile:
       dest: "{{ galaxy_directory }}/config/tool_conf.xml"
