@@ -47,7 +47,8 @@ galaxy_version: feature-chronos
 ```
 
 These variables specify the repository of galaxy from which ansible will clone and
-the branch to checkout (e.g. `feature-chronos`).
+the branch to checkout (e.g. `feature-chronos`). Ensure that you have
+access to the phabricator from the corresponding host.
 
 
 Then, export the following variable to forward ssh agent to your host:
