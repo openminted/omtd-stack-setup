@@ -17,6 +17,7 @@
       dest: "{{ galaxy_directory }}"
       clone: yes
       version: "{{ galaxy_version }}"
+      accept_hostkey: yes
 
 - name: Create object store
   file:
