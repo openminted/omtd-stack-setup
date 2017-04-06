@@ -2,6 +2,19 @@
     msg: You need to specify exactly one host running Galaxy.
   when: "{{ groups.galaxy|length != 1}}"
 
+- name: Add server name to the apache.conf
+  lineinfile:
+      dest: "/etc/apache2/apache2.conf"
+      regexp: ^ServerName
+      line: "ServerName {{ inventory_hostname }}"
+      state: present
+
+- name: Ensure locale is en_US.UTF-8
+  lineinfile:
+      dest: /etc/default/locale
+      regexp: LC_ALL
+      line: "LC_ALL=\"en_US.UTF-8\""
+
 - name: Install required packages
   apt:
       name: "{{ item }}"
@@ -50,6 +63,34 @@
       regexp: ^(#?)+new_file_path\s?=
       line: "new_file_path = {{ object_store_directory }}/{{ tmp_directory }}"
       state: present
+
+- name: Clone SADI repo
+  git:
+      repo: https://github.com/mikel-egana-aranguren/SADI-Docker-Galaxy.git
+      dest: "{{ sadi_directory }}"
+      clone: yes
+  when: "{{ install_sadi }}"
+
+- name: Create tool_conf.xml file
+  copy:
+      remote_src: True
+      src: "{{ galaxy_directory }}/config/tool_conf.xml.sample"
+      dest: "{{ galaxy_directory }}/config/tool_conf.xml"
+
+- name: Add SADI section to tool_conf.xml
+  blockinfile:
+      dest: "{{ galaxy_directory }}/config/tool_conf.xml"
+      insertbefore: </toolbox>
+      block: |
+          <section id="SADI-Docker" name="Docker SADI services">
+              <tool file="SADI-Docker/SADI-Docker-sadi_client.xml"/>
+              <tool file="SADI-Docker/SADI-Docker-RDFSyntaxConverter.xml"/>
+              <tool file="SADI-Docker/SADI-Docker-mergeRDFgraphs.xml"/>
+              <tool file="SADI-Docker/SADI-Docker-SPARQLGalaxy.xml"/>
+              <tool file="SADI-Docker/SADI-Docker-rapper.xml"/>
+              <tool file="SADI-Docker/SADI-Docker-tab2rdf.xml"/>
+          </section>
+  when: "{{ install_sadi }}"
 
 - name: Start galaxy
   command: sh run.sh --daemon
