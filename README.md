@@ -65,9 +65,8 @@ of `chronos-master` to point to the host which runs your chronos):
 <!-- A sample job config that explicitly configures job running the way it is configured by default (if there is no explicit config). -->
 <job_conf>
     <plugins>
-        <plugin id="chronos" type="runner" load="galaxy.jobs.runners.chrons:ChronosJobRunner" workers="4">
-            <param id="chronos-master">{{ chronos-hostname }}:8080</param>
-            <param id="volume">/root/galaxy</param>
+        <plugin id="chronos" type="runner" load="galaxy.jobs.runners.chronos:ChronosJobRunner" workers="4">
+            <param id="chronos">{{ chronos-host:8080 }}</param>
             <param id="owner">galaxy@foo.test</param>
         </plugin>
         <plugin id="local" type="runner" load="galaxy.jobs.runners.local:LocalJobRunner" workers="4"/>
@@ -78,8 +77,11 @@ of `chronos-master` to point to the host which runs your chronos):
     <destinations default="local_dest">
         <destination id="chronos_dest" runner="chronos">
             <param id="docker_enabled">true</param>
+            <!-- Directory which hosts working directories of Galaxy. -->
+            <param id="volumes"{{ directory }}</param>
             <param id="docker_memory">512</param>
             <param id="docker_cpu">2</param>
+            <param id="max_retries">1</param>
         </destination>
         <destination id="local_dest" runner="local">
             <param id="docker_enabled">true</param>
@@ -160,7 +162,7 @@ galaxy_repo: https://github.com/galaxyproject/galaxy
 # Version of the repository to check out. A branch, a tag or a commit hash.
 galaxy_version: release_16.10
 
-# True is SADI workflow should be installed.
+# True if SADI workflow should be installed.
 install_sadi: True
 
 # Directory to host SADI code.
