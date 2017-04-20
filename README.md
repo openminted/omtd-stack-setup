@@ -38,6 +38,14 @@ ansible-playbook -i hosts site.yaml
 ```
 
 # Use Case: Run SADI workflow on a Mesos cluster
+This guide is tested on VMs running Ubuntu 14.04 with 4GB of RAM
+and quad core processor. Also, our cluster consists of the following
+VMs (not constrictive though):
+
+- One VM running NFS server
+- One VM running Galaxy
+- One VM running Chronos and mesos-master
+- One VM running mesos-slave
 
 First, add the following variables to the `group_vars/galaxy`:
 
@@ -46,9 +54,9 @@ galaxy_repo: ssh://phab-vcs-user@phab.dev.grnet.gr:222/diffusion/GALAXY/galaxy.g
 galaxy_version: feature-chronos
 ```
 
-These variables specify the repository of galaxy from which ansible will clone and
-the branch to checkout (e.g. `feature-chronos`). Ensure that you have
-access to the phabricator from the corresponding host.
+When Ansible clones Galaxy, these variables are used to determine the Galaxy
+repository and branch. Ensure that you have access to the phabricator from
+the corresponding host.
 
 
 Then, export the following variable to forward ssh agent to your host:
