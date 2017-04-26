@@ -78,10 +78,7 @@
       dest: "{{ galaxy_directory }}/config/tool_conf.xml"
 
 - name: Copy SADI tools
-  copy:
-      remote_src: True
-      src: "{{ sadi_directory }}/tools/SADI-Docker"
-      dest: "{{ galaxy_directory }}/tools"
+  command: "cp -R {{ sadi_directory }}/tools/SADI-Docker {{ galaxy_directory }}/tools"
   when: "{{ install_sadi }}"
 
 - name: Add SADI section to tool_conf.xml
@@ -98,6 +95,11 @@
               <tool file="SADI-Docker/SADI-Docker-tab2rdf.xml"/>
           </section>
   when: "{{ install_sadi }}"
+
+- name: Apply migrations
+  command: sh manage_db.sh upgrade
+  args:
+      chdir: "{{ galaxy_directory }}"
 
 - name: Start galaxy
   command: sh run.sh --daemon
