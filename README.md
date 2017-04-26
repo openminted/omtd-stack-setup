@@ -122,6 +122,12 @@ setting your variables on your group_vars directory.
 export_options: rw,sync,no_subtree_check,no_root_squash
 ```
 
+## Role: nfs_clients
+
+```yaml
+mountable_dir: /root/galaxy_workspace
+```
+
 ## Role: common
 
 ```yaml
@@ -151,7 +157,7 @@ galaxy_directory: /srv/galaxy
 
 # Directory which holds object store data. This directory is mounted to an nfs
 # server.
-object_store_directory: /root/galaxy_dir
+object_store_directory: /root/galaxy_workspace
 
 # Directory which is the galaxy job working directory. It's parent is
 # `object_store_directory`.
@@ -168,7 +174,7 @@ tmp_directory: tmp
 galaxy_repo: https://github.com/galaxyproject/galaxy
 
 # Version of the repository to check out. A branch, a tag or a commit hash.
-galaxy_version: release_16.10
+galaxy_version: feature-chronos
 
 # True if SADI workflow should be installed.
 install_sadi: True
