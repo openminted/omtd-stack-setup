@@ -8,6 +8,8 @@
       regexp: ^ServerName
       line: "ServerName {{ inventory_hostname }}"
       state: present
+  notify:
+      - restart apache2
 
 - name: Ensure locale is en_US.UTF-8
   lineinfile:
