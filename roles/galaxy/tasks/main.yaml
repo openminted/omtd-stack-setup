@@ -95,13 +95,3 @@
               <tool file="SADI-Docker/SADI-Docker-tab2rdf.xml"/>
           </section>
   when: "{{ install_sadi }}"
-
-- name: Apply migrations
-  command: sh manage_db.sh upgrade
-  args:
-      chdir: "{{ galaxy_directory }}"
-
-- name: Start galaxy
-  command: sh run.sh --daemon
-  args:
-      chdir: "{{ galaxy_directory }}"
