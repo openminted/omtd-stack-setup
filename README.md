@@ -113,7 +113,8 @@ Then restart galaxy and run workflow as described
 # Defaults variables per role.
 
 Below, there is a list of default variables per role. You can override them by
-setting your variables on your group_vars directory.
+setting your variables on your group_vars directory. Ensure that `object_story_directoy`
+and `mountable_dir` points to the same directory.
 
 ## Role: nfs
 

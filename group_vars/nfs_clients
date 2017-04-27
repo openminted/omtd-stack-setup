@@ -1,1 +1,1 @@
-mountable_dir: /root/galaxy_workspace
+mountable_dir: /srv/galaxy/database
