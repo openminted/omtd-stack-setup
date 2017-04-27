@@ -6,19 +6,6 @@
         raw: "apt-get update -y && apt-get install {{ python_package }} -y"
         when: "{{ install_python }}"
 
-- hosts: nfs_server
-  remote_user: root
-  roles:
-      - role: nfs
-
-- hosts: nfs_clients
-  remote_user: root
-  pre_tasks:
-      - set_fact:
-          exported_dir: "{{ hostvars[groups['nfs_server'][0]].exported_dir }}"
-  roles:
-      - nfs-clients
-
 - hosts: mesos_masters
   remote_user: root
   roles:
@@ -44,3 +31,16 @@
       - geerlingguy.apache
       - lexrus.ansible-role-docker
       - role: galaxy
+
+- hosts: nfs_server
+  remote_user: root
+  roles:
+      - role: nfs
+
+- hosts: nfs_clients
+  remote_user: root
+  pre_tasks:
+      - set_fact:
+          exported_dir: "{{ hostvars[groups['nfs_server'][0]].exported_dir }}"
+  roles:
+      - nfs-clients
