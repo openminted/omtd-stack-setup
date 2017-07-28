@@ -6,6 +6,13 @@
         raw: "apt-get update -y && apt-get install {{ python_package }} -y"
         when: "{{ install_python }}"
 
+- hosts: docker_registry
+  remote_user: root
+  roles:
+      - geerlingguy.apache
+      - lexrus.ansible-role-docker
+      - role: docker-registry
+
 - hosts: mesos_masters
   remote_user: root
   roles:

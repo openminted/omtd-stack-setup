@@ -1,17 +1,13 @@
 [nfs_server]
-# Specify one nfs server.
+
+[docker_registry]
 
 [nfs_clients]
-# List of nfs-clients. Hosts which share directories with nfs-server.
 
 [mesos_masters]
-# List hosts of mesos masters.
 
 [mesos_slaves]
-# List hosts of mesos slaves.
 
 [chronos]
-# List hosts that run chronos.
 
 [galaxy]
-# Host to setup a dev environment for galaxy.

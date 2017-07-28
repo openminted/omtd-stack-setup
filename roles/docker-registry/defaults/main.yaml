@@ -1,0 +1,4 @@
+registry_username: openminted
+registry_password: OpenMinTeD
+
+server_root: /usr/local/apache2

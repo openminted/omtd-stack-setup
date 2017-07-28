@@ -19,6 +19,7 @@ to every group. This playbook requires four groups of hosts:
 - `chronos`: Hosts that run chronos framework. Note that `chronos` is
    not supported on Ubuntu 16.04.
 - `galaxy`: A host running Galaxy instance.
+- `docker-registry`: A host running a private Docker registry.
 
 Perhaps, you may also want to specify additional group variables
 based on your host, e.g. change the `ansible_python_interpreter`
@@ -46,6 +47,7 @@ VMs (not constrictive though):
 - One VM running Galaxy
 - One VM running Chronos and mesos-master
 - One VM running mesos-slave
+- One VM running docker registry
 
 First, add the following variables to the `group_vars/galaxy`:
 
@@ -68,7 +70,12 @@ On the host which runs galaxy, create the following job configuration on
 `<galaxy_repo>/config/job_conf.xml` (Do not forget to change the parameter
 of `chronos-master` to point to the host which runs your chronos):
 
-```xml
+Also, note that you need your site certificate and its key to be already
+defined at location `conf/domain.crt` and
+`conf/domain.key>` respectively (relative to `server_root` variable-see below)
+to setup `docker_registry` successfully.
+
+```lang=xml
 <?xml version="1.0"?>
 <!-- A sample job config that explicitly configures job running the way it is configured by default (if there is no explicit config). -->
 <job_conf>
@@ -118,41 +125,41 @@ and `mountable_dir` points to the same directory.
 
 ## Role: nfs
 
-```yaml
+```lang=yaml
 # NFS export options.
 export_options: rw,sync,no_subtree_check,no_root_squash
 ```
 
 ## Role: nfs_clients
 
-```yaml
+```lang=yaml
 mountable_dir: /root/galaxy_workspace
 ```
 
 ## Role: common
 
-```yaml
+```lang=yaml
 # Mesosphere apt repo.
 mesosphere_repo: "deb http://repos.mesosphere.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
 ```
 
 ## Role: mesos_masters
 
-```yaml
+```lang=yaml
 # Size of Zookeeper Quorum
 quorum_size: 1
 ```
 
 ## Role: chronos
 
-```yaml
+```lang=yaml
 chronos_http_port: 8080
 chronos_https_port: 9443
 ```
 
 ## Role: galaxy
 
-```yaml
+```lang=yaml
 # Directory to host galaxy code.
 galaxy_directory: /srv/galaxy
 
@@ -182,4 +189,15 @@ install_sadi: True
 
 # Directory to host SADI code.
 sadi_directory: /root/SADI
+```
+
+# Role docker-registry
+
+```lang=yaml
+# Credentials for registry
+registry_username: openminted
+registry_password: OpenMinTeD
+
+# Server root needed for apache.
+server_root: /usr/local/apache2
 ```

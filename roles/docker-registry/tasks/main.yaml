@@ -1,0 +1,28 @@
+- name: Install required packages.
+  apt:
+      name: "{{ item }}"
+      state: installed
+  with_items:
+      - python-passlib
+      - python-pip
+
+- name: Make sure we can user docker_container
+  pip:
+      name : "{{ item }}"
+  with_items:
+      - docker-py
+
+- name: Add a user entry
+  htpasswd:
+      path: "{{ server_root }}/conf/htpasswd"
+      name: "{{ registry_username }}"
+      password: "{{ registry_password }}"
+
+- name: Run docker registry container.
+  docker_container:
+      image: registry:2
+      name: registry
+      ports:
+          - "5000:5000"
+      state: started
+      restart_policy: always
