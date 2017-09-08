@@ -3,10 +3,11 @@
       name: "{{ item }}"
       state: installed
   with_items:
+      - python
       - python-passlib
       - python-pip
 
-- name: Make sure we can user docker_container
+- name: Make sure we can use docker_container
   pip:
       name : "{{ item }}"
   with_items:
@@ -25,4 +26,6 @@
       ports:
           - "5000:5000"
       state: started
+      volumes:
+          - "/mnt/registry:/var/lib/registry"
       restart_policy: always
