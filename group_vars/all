@@ -1,5 +1,5 @@
 # True if python is needed to be installed first.
-install_python: False
+install_python: True
 
 # Distro of python which has to be installed.
 python_package: python

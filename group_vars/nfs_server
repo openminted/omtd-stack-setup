@@ -1,4 +1,4 @@
-exported_dir: /var/share
+exported_dir: /srv/galaxy/database
 
 # NFS clients. It includes mesos slaves and galaxy.
 nfs_clients: "{{ groups.mesos_slaves + groups.galaxy }}"

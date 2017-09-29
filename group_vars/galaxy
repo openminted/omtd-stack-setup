@@ -10,4 +10,7 @@ apache_mods_enabled:
   - proxy_http.load
   - proxy.conf
 
+object_store_directory: /srv/galaxy/database
+galaxy_version: dev
+force: yes
 apache_remove_default_vhost: True

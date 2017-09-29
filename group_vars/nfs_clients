@@ -1,1 +1,2 @@
 mountable_dir: /srv/galaxy/database
+force: no

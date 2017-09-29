@@ -1,3 +1,9 @@
+- name: Install Mesos # Required
+  apt:
+      name: mesos
+      state: latest
+  register: mesos_installed
+
 - name: Install chronos
   apt:
       name: chronos

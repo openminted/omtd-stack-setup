@@ -22,8 +22,3 @@ galaxy_repo: https://github.com/galaxyproject/galaxy
 # Version of the repository to check out. A branch, a tag or a commit hash.
 galaxy_version: release_16.10
 
-# True is SADI workflow should be installed.
-install_sadi: True
-
-# Directory to host SADI code.
-sadi_directory: /root/SADI
