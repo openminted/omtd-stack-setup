@@ -70,6 +70,13 @@
       line: "new_file_path = {{ object_store_directory }}/{{ tmp_directory }}"
       state: present
 
+- name: Enable tool watcher
+  lineinfile:
+      dest: "{{ galaxy_directory }}/config/galaxy.ini"
+      regexp: ^(#?)+watch_tools\s?=
+      line: "watch_tools = True"
+      state: present
+
 - name: Create tool_conf.xml file
   copy:
       remote_src: True
