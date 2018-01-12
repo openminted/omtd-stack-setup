@@ -3,11 +3,11 @@ galaxy_directory: /srv/galaxy
 
 # Directory which holds object store data. This directory is mounted to an nfs
 # server.
-object_store_directory: /root/galaxy_dir
+object_store_directory: "{{ galaxy_directory }}/database"
 
 # Directory which is the galaxy job working directory. It's parent is
 # `object_store_directory`.
-job_working_directory: jobs_directory
+job_working_directory: "{{ object_store_directory }}/jobs_directory"
 
 # Directory which holds datasets of workflows. It's parent is
 # `object_store_directory`.
@@ -22,3 +22,17 @@ galaxy_repo: https://github.com/galaxyproject/galaxy
 # Version of the repository to check out. A branch, a tag or a commit hash.
 galaxy_version: release_16.10
 
+# Proxy
+apache_vhosts:
+  - servername: "{{ inventory_hostname }}"
+    extra_parameters: |
+        RewriteEngine on
+        RewriteRule ^(.*) http://localhost:8080$1 [P]
+
+apache_mods_enabled:
+  - rewrite.load
+  - proxy.load
+  - proxy_http.load
+  - proxy.conf
+
+apache_remove_default_vhost: True

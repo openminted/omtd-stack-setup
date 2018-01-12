@@ -38,6 +38,9 @@
 - name: Install watchdog python package
   pip: name=watchdog virtualenv={{ galaxy_directory }}/.venv
 
+- name: Install chronos-python package
+  pip: name=chronos-python virtualenv={{ galaxy_directory }}/.venv
+
 - name: Create object store
   file:
       path: "{{ object_store_directory }}"
