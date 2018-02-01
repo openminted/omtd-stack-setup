@@ -1,9 +1,9 @@
-# Directory to host galaxy code.
-galaxy_directory: /srv/galaxy
+# Directory to host executor galaxy code.
+executor_directory: /srv/executor
 
 # Directory which holds object store data. This directory is mounted to an nfs
 # server.
-object_store_directory: "{{ galaxy_directory }}/database"
+object_store_directory: "{{ executor_directory }}/database"
 
 # Directory which is the galaxy job working directory. It's parent is
 # `object_store_directory`.

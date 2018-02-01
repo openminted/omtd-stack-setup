@@ -1,2 +1,2 @@
-mountable_dir: /srv/galaxy/database
+mountable_dir: /srv/executor/database
 force: no
