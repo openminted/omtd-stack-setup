@@ -104,6 +104,12 @@
       src: "{{ executor_directory }}/config/tool_conf.xml.sample"
       dest: "{{ executor_directory }}/config/tool_conf.xml"
 
+- name: Setup job_conf
+  template:
+    src: job_conf.yaml.j2
+    dest: "{{ executor_directory }}/config/job_conf.yaml"
+    force: yes
+
 - name: Setup systemd
   template:
     src: galaxy.service.j2

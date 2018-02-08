@@ -41,3 +41,22 @@ apache_remove_default_vhost: True
 executor_db_name: executor
 executor_db_user: executor
 executor_db_password: executor
+
+# Worker Runner Setup
+chronos_workers: 12
+local_workers: 4
+
+# Chronos runner setup
+# chronos_url: chronos.example.org:8080
+chronos_user: openminted
+chronos_password: openminted
+
+# Gear1
+gear_1_docker_memory: 2048
+gear_1_docker_cpu: 1
+gear_1_max_retries: 2
+
+# Gear2
+gear_2_docker_memory: 4096
+gear_2_docker_cpu: 2
+gear_2_max_retries: 2

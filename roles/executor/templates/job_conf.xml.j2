@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<job_conf>
+    <plugins>
+        <plugin
+                id="chronos" type="runner"
+                load="galaxy.jobs.runners.chronos:ChronosJobRunner"
+                workers="{{ chronos_workers }}">
+            <param id="chronos">{{ chronos_url }}</param>
+            <param id="owner">galaxy-omtd@grnet.gr</param>
+            <param id="username">{{ chronos_user  }}</param>
+            <param id="password">{{ chronos_password  }}</param>
+        </plugin>
+        <plugin
+            id="local" type="runner"
+            load="galaxy.jobs.runners.local:LocalJobRunner"
+            workers="{{ local_workers }}"/>
+    </plugins>
+    <handlers>
+        <handler id="main"/>
+    </handlers>
+    <destinations default="gear_1">
+        <destination id="gear_1" runner="chronos">
+            <param id="docker_enabled">true</param>
+            <!-- Directory which hosts working directories of Galaxy. -->
+            <param id="volumes">{{ executor_directory }}/database</param>
+            <param id="docker_memory">{{ gear_1_docker_memory }}</param>
+            <param id="docker_cpu">{{ gear_1_docker_cpu }}</param>
+            <param id="max_retries">{{ gear_1_max_retries }}</param>
+        </destination>
+        <destination id="gear_2" runner="chronos">
+            <param id="docker_enabled">true</param>
+            <param id="volumes">{{ executor_directory }}/database</param>
+            <param id="docker_memory">{{ gear_2_docker_memory }}</param>
+            <param id="docker_cpu">{{ gear_2_docker_cpu }}</param>
+            <param id="max_retries">{{ gear_2_max_retries }}</param>
+        </destination>
+        <destination id="local_dest" runner="local">
+            <param id="docker_enabled">true</param>
+            <param id="docker_sudo">false</param>
+        </destination>
+    </destinations>
+    <tools>
+        <tool id="data_source" destination="local_dest"/>
+    <tool id="omtdImporter" destination="local_dest"/>
+    </tools>
+</job_conf>
