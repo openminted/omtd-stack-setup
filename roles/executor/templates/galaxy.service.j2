@@ -1,0 +1,9 @@
+# /lib/systemd/system/galaxy.service
+[Unit]
+Description=Galaxy Workflow Executor
+
+[Service]
+User=root
+Type=simple
+Restart=on-failure
+ExecStart={{ executor_directory }}/run.sh

@@ -35,11 +35,11 @@
       version: "{{ galaxy_version }}"
       accept_hostkey: yes
 
-- name: Install watchdog python package
-  pip: name=watchdog virtualenv={{ executor_directory }}/.venv
-
-- name: Install chronos-python package
-  pip: name=chronos-python virtualenv={{ executor_directory }}/.venv
+- name: Install extra packages in virtualenv
+  pip:
+    - name: {{ item }}
+    - virtualenv: "{{ executor_directory }}/.venv"
+  with_items: watchdog chronos-python
 
 - name: Create object store
   file:
@@ -52,7 +52,7 @@
       src: "{{ executor_directory }}/config/galaxy.ini.sample"
       dest: "{{ executor_directory }}/config/galaxy.ini"
 
-- name: Set job working directory 
+- name: Set job working directory
   lineinfile:
       dest: "{{ executor_directory }}/config/galaxy.ini"
       regexp: ^(#?)+job_working_directory\s?=
@@ -85,3 +85,10 @@
       remote_src: True
       src: "{{ executor_directory }}/config/tool_conf.xml.sample"
       dest: "{{ executor_directory }}/config/tool_conf.xml"
+
+- name: Setup systemd
+  template:
+    src: galaxy.service.j2
+    dest: "/lib/systemd/system/galaxy.service"
+    force: yes
+  notify: start_galaxy

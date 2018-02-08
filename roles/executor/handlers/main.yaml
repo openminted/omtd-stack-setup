@@ -8,3 +8,9 @@
       name: galaxy
       enabled: yes
       state: restarted
+
+- name: Start galaxy
+  service:
+    name: galaxy
+    enabled: yes
+    state: started

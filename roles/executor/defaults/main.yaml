@@ -17,10 +17,10 @@ files_directory: files
 tmp_directory: tmp
 
 # Galaxy remote repo.
-galaxy_repo: https://github.com/galaxyproject/galaxy
+galaxy_repo: https://github.com/openminted/galaxy
 
 # Version of the repository to check out. A branch, a tag or a commit hash.
-galaxy_version: release_16.10
+galaxy_version: master
 
 # Proxy
 apache_vhosts:
