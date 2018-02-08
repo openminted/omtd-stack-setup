@@ -31,9 +31,6 @@
 
 - hosts: executor
   remote_user: root
-  #pre_tasks:
-  #    - set_fact:
-  #        object_store_directory: "{{ hostvars[groups['nfs_clients'][0]].mountable_dir }}"
   roles:
       - geerlingguy.apache
       - lexrus.ansible-role-docker

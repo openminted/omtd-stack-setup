@@ -36,3 +36,8 @@ apache_mods_enabled:
   - proxy.conf
 
 apache_remove_default_vhost: True
+
+# DB settings
+executor_db_name: executor
+executor_db_user: executor
+executor_db_password: executor
