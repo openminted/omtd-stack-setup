@@ -50,7 +50,7 @@
   shell: |
     createuser {{ executor_db_user }}
     createdb {{ executor_db_name }}
-    psql -c "ALTER USER galaxy WITH ENCRYPTED PASSWORD  '{{ executor_db_password }}';"
+    psql -c "ALTER USER {{ executor_db_user }} WITH ENCRYPTED PASSWORD  '{{ executor_db_password }}';"
   tags: postgres
 
 - name: Create object store
@@ -64,40 +64,6 @@
       src: "{{ executor_directory }}/config/galaxy.ini.sample"
       dest: "{{ executor_directory }}/config/galaxy.ini"
 
-- name: Set Galaxy DB conection
-  lineinfile:
-    dest: "{{ executor_directory }}/config/galaxy.ini"
-    regexp: ^(#?)+database_connection\s?=
-    line: "database_connection=postgresql://{{ executor_db_user }}:{{ executor_db_password }}@localhost/{{ executor_db_name }}"
-
-- name: Set job working directory
-  lineinfile:
-      dest: "{{ executor_directory }}/config/galaxy.ini"
-      regexp: ^(#?)+job_working_directory\s?=
-      line: "job_working_directory = {{ object_store_directory }}/{{ job_working_directory }}"
-      state: present
-
-- name: Set file directory
-  lineinfile:
-      dest: "{{ executor_directory }}/config/galaxy.ini" 
-      regexp: ^(#?)+file_path\s?=
-      line: "file_path = {{ object_store_directory }}/{{ files_directory }}"
-      state: present
-
-- name: Set tmp directory 
-  lineinfile:
-      dest: "{{ executor_directory }}/config/galaxy.ini"
-      regexp: ^(#?)+new_file_path\s?=
-      line: "new_file_path = {{ object_store_directory }}/{{ tmp_directory }}"
-      state: present
-
-- name: Enable tool watcher
-  lineinfile:
-      dest: "{{ executor_directory }}/config/galaxy.ini"
-      regexp: ^(#?)+watch_tools\s?=
-      line: "watch_tools = True"
-      state: present
-
 - name: Create tool_conf.xml file
   copy:
       remote_src: True
@@ -106,7 +72,7 @@
 
 - name: Setup job_conf
   template:
-    src: job_conf.yaml.j2
+    src: job_conf.xml.j2
     dest: "{{ executor_directory }}/config/job_conf.yaml"
     force: yes
 
@@ -115,4 +81,10 @@
     src: galaxy.service.j2
     dest: "/lib/systemd/system/galaxy.service"
     force: yes
-  notify: start_galaxy
+
+- name: Install Galaxy
+  shell: "{{executor_directory}}/run.sh --status | echo OK"
+
+- name: Enable Galaxy in systemd
+  shell: "systemctl enable galaxy"
+  notify: start galaxy

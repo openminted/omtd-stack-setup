@@ -9,7 +9,7 @@
       enabled: yes
       state: restarted
 
-- name: Start galaxy
+- name: start galaxy
   service:
     name: galaxy
     enabled: yes
