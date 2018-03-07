@@ -1,6 +1,6 @@
 - fail:
-    msg: You need to specify exactly one host to run the executor.
-  when: "{{ groups.executor|length != 1}}"
+    msg: You need to specify exactly one host to run the editor.
+  when: "{{ groups.editor|length != 1}}"
 
 - name: Add server name to the apache.conf
   lineinfile:
@@ -30,50 +30,38 @@
       - postgresql-contrib
       - python-psycopg2
 
-- name: Clone galaxy repo
+- name: "Clone galaxy repo {{galaxy_repo}} repo"
   git:
       repo: "{{ galaxy_repo }}"
-      dest: "{{ executor_directory }}"
+      dest: "{{ editor_directory }}"
       clone: yes
       version: "{{ galaxy_version }}"
       accept_hostkey: yes
 
 - name: Install extra packages in virtualenv
-  pip: name="{{ item }}" virtualenv="{{ executor_directory }}/.venv"
+  pip: name="{{ item }}" virtualenv="{{ editor_directory }}/.venv"
   with_items:
     - watchdog
-    - chronos-python
 
 - name: Create postgres user and database
   become: yes
   become_user: postgres
   shell: |
-    createuser {{ executor_db_user }}
-    createdb {{ executor_db_name }}
-    psql -c "ALTER USER {{ executor_db_user }} WITH ENCRYPTED PASSWORD  '{{ executor_db_password }}';"
+    createuser {{ editor_db_user }}
+    createdb {{ editor_db_name }}
+    psql -c "ALTER USER {{ editor_db_user }} WITH ENCRYPTED PASSWORD  '{{ editor_db_password }}';"
   tags: postgres
-
-- name: Create object store
-  file:
-      path: "{{ object_store_directory }}"
-      state: directory
 
 - name: Create tool_conf.xml file
   copy:
       remote_src: True
-      src: "{{ executor_directory }}/config/tool_conf.xml.sample"
-      dest: "{{ executor_directory }}/config/tool_conf.xml"
+      src: "{{ editor_directory }}/config/tool_conf.xml.sample"
+      dest: "{{ editor_directory }}/config/tool_conf.xml"
 
-- name: Setup systemd
+- name: Setup galaxy.ini
   template:
     src: galaxy.ini.j2
-    dest: "{{ executor_directory }}/config/galaxy.ini"
-    force: yes
-
-- name: Setup job_conf
-  template:
-    src: job_conf.xml.j2
-    dest: "{{ executor_directory }}/config/job_conf.yaml"
+    dest: "{{ editor_directory }}/config/galaxy.ini"
     force: yes
 
 - name: Setup systemd
@@ -83,7 +71,7 @@
     force: yes
 
 - name: Install Galaxy
-  shell: "{{executor_directory}}/run.sh --status | echo OK"
+  shell: "{{editor_directory}}/run.sh --status | echo OK"
 
 - name: Enable Galaxy in systemd
   shell: "systemctl enable galaxy"

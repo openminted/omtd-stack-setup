@@ -36,6 +36,12 @@
       - lexrus.ansible-role-docker
       - role: executor
 
+- hosts: editor
+  remote_user: root
+  roles:
+      - geerlingguy.apache
+      - role: editor
+
 - hosts: nfs_server
   remote_user: root
   roles:

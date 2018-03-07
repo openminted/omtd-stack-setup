@@ -1,0 +1,16 @@
+- name: restart apache2
+  service:
+      name: apache2
+      state: restarted
+
+- name: restart galaxy
+  service:
+      name: galaxy
+      enabled: yes
+      state: restarted
+
+- name: start galaxy
+  service:
+    name: galaxy
+    enabled: yes
+    state: started

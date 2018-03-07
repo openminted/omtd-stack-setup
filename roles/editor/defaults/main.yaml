@@ -1,0 +1,45 @@
+# Directory to host editor galaxy code.
+editor_directory: /srv/editor
+galaxy_prefix: /galaxy
+galaxy_admin: galaxy-admin@example.org
+
+# Remote user setup
+remote_user_maildomain: example.com
+remote_user_secret: pleasechangethistosomethinglessobvious
+
+# Directory which holds object store data. This directory is mounted to an nfs
+# server.
+object_store_directory: "{{ editor_directory }}/database"
+
+# Directory which holds datasets of workflows. It's parent is
+# `object_store_directory`.
+files_directory: files
+
+# tmp directory of jobs. It's parent is `object_store_directory`.
+tmp_directory: tmp
+
+# Galaxy remote repo.
+galaxy_repo: https://github.com/openminted/galaxy
+
+# Version of the repository to check out. A branch, a tag or a commit hash.
+galaxy_version: editor
+
+# Proxy
+apache_vhosts:
+  - servername: "{{ inventory_hostname }}"
+    extra_parameters: |
+        RewriteEngine on
+        RewriteRule ^(.*) http://localhost:8080$1 [P]
+
+apache_mods_enabled:
+  - rewrite.load
+  - proxy.load
+  - proxy_http.load
+  - proxy.conf
+
+apache_remove_default_vhost: True
+
+# DB settings
+editor_db_name: editor
+editor_db_user: editor
+editor_db_password: editor
