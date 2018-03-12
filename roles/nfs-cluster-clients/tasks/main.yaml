@@ -5,12 +5,12 @@
 
 - name: Create mountable directory
   file:
-      path: "{{ mountable_dir }}"
+      path: "{{ data_share }}"
       state: directory
 
 - name: Create mount points
   mount:
-      name: "{{ mountable_dir }}"
-      src: "{{ groups.nfs_server[0] }}:{{ exported_dir }}"
+      name: "{{ data_share }}"
+      src: "{{ groups.executor[0] }}:{{ data_share }}"
       state: mounted
       fstype: nfs

@@ -29,6 +29,7 @@
       - postgresql
       - postgresql-contrib
       - python-psycopg2
+      - nfs-common
 
 - name: "Clone galaxy repo {{galaxy_repo}} repo"
   git:
@@ -51,6 +52,14 @@
     createdb {{ editor_db_name }}
     psql -c "ALTER USER {{ editor_db_user }} WITH ENCRYPTED PASSWORD  '{{ editor_db_password }}';"
   tags: postgres
+
+
+- name: Create NFS mount point or tools 
+  mount:
+      name: "{{ editor_directory }}/tools"
+      src: "{{ groups.executor[0] }}:{{ hostvars[groups['executor'][0]].tools_share }}"
+      state: mounted
+      fstype: nfs
 
 - name: Create tool_conf.xml file
   copy:

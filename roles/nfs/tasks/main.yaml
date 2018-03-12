@@ -1,10 +1,11 @@
-- fail:
-    msg: You need to specify one host.
-  when: "{{ groups.nfs_server|length != 1}}"
-
-- name: Ensure shared directory
+- name: Ensure shared directory for data
   file:
-      dest: "{{ exported_dir }}"
+      dest: "{{ data_share }}"
+      state: directory
+
+- name: Ensure shared directory for tools
+  file:
+      dest: "{{ tools_share }}"
       state: directory
 
 - name: Install nfs-server

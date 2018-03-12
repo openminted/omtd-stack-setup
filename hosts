@@ -2,11 +2,9 @@
 
 [docker_registry]
 
-[nfs_clients]
+[cluster_master]
 
-[mesos_masters]
-
-[mesos_slaves]
+[cluster_nodes]
 
 [chronos]
 

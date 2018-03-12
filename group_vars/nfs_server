@@ -1,4 +1,2 @@
-exported_dir: /srv/executor/database
-
-# NFS clients. It includes mesos slaves and galaxy.
-nfs_clients: "{{ groups.mesos_slaves + groups.executor }}"
+data_share: "{{ groups.executor.data_share }}"
+tools_share: "{{ groups.executor.tools_share }}"

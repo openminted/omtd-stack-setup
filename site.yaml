@@ -13,16 +13,20 @@
       - lexrus.ansible-role-docker
       - role: docker-registry
 
-- hosts: mesos_masters
+- hosts: cluster_master
   remote_user: root
   roles:
       - role: mesos-masters
 
-- hosts: mesos_slaves
+- hosts: cluster_nodes
   remote_user: root
+  pre_tasks:
+    - set_fact:
+        data_share: "{{ hostvars[groups['executor'][0]].data_share }}"
   roles:
       - lexrus.ansible-role-docker
       - role: mesos-slaves
+      - role: nfs-cluster-clients
 
 - hosts: chronos
   remote_user: root
@@ -35,22 +39,13 @@
       - geerlingguy.apache
       - lexrus.ansible-role-docker
       - role: executor
+      - role: nfs
 
 - hosts: editor
   remote_user: root
+  pre_tasks:
+    - set_fact:
+        tools_share: "{{ hostvars[groups['executor'][0]].tools_share }}"
   roles:
       - geerlingguy.apache
       - role: editor
-
-- hosts: nfs_server
-  remote_user: root
-  roles:
-      - role: nfs
-
-- hosts: nfs_clients
-  remote_user: root
-  pre_tasks:
-      - set_fact:
-          exported_dir: "{{ hostvars[groups['nfs_server'][0]].exported_dir }}"
-  roles:
-      - nfs-clients
