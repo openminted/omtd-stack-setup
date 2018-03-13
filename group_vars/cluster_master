@@ -1,0 +1,5 @@
+chronos_http_user: chronosadmin
+chronos_http_password: chronospassword
+
+chronos_principal: chronos.omtd
+chronos_secret: chronos.secret

@@ -3,18 +3,18 @@
       name: mesos-master
       enabled: yes
       state: restarted
-  when: "{{ inventory_hostname in groups.mesos_masters and (mesos_installed is defined and mesos_installed) }}"
+  when: "{{ inventory_hostname in groups.cluster_master and (mesos_installed is defined and mesos_installed) }}"
 
 - name: restart mesos-slave
   service:
       name: mesos-slave
       enabled: yes
       state: restarted
-  when: "{{ inventory_hostname in groups.mesos_slaves and (mesos_installed is defined and mesos_installed) }}"
+  when: "{{ inventory_hostname in groups.cluster_nodes and (mesos_installed is defined and mesos_installed) }}"
 
 - name: restart chronos
   service:
       name: chronos
       enabled: yes
       state: restarted
-  when: "{{ inventory_hostname in groups.chronos and (chronos_installed is defined and chronos_installed) }}"
+  when: "{{ inventory_hostname in groups.cluster_master and (chronos_installed is defined and chronos_installed) }}"

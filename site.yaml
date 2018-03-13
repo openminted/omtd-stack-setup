@@ -17,6 +17,7 @@
   remote_user: root
   roles:
       - role: mesos-masters
+      - role: chronos
 
 - hosts: cluster_nodes
   remote_user: root
@@ -27,11 +28,6 @@
       - lexrus.ansible-role-docker
       - role: mesos-slaves
       - role: nfs-cluster-clients
-
-- hosts: chronos
-  remote_user: root
-  roles:
-      - role: chronos
 
 - hosts: executor
   remote_user: root

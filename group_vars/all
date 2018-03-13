@@ -5,3 +5,5 @@ install_python: True
 python_package: python
 
 ansible_python_interpreter: /usr/bin/python
+
+cluster_name: omtdcluster

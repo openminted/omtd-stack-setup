@@ -1,7 +1,6 @@
-- name: Install Mesos # Required
+- name: Install Mesos 1.4.1-2.0.1 # Required
   apt:
-      name: mesos
-      state: latest
+      name: mesos=1.4.1-2.0.1
   register: mesos_installed
 
 - name: Install chronos
@@ -10,25 +9,42 @@
       state: latest
   register: chronos_installed
 
-- name: Add hostname file
+- name: Create directory structure
+  file:
+    path: "/etc/chronos/{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - conf
+    - store
+
+- name: Copy configuration files
   copy:
-      content: "{{ inventory_hostname }}"
-      dest: /etc/chronos/conf/hostname
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { content: "{{ inventory_hostname }}", dest: "/etc/chronos/conf/hostname" }
+    - { content: "{{ chronos_http_user }}:{{ chronos_http_password }}", dest: "/etc/chronos/conf/http_credentials" }
+    - { content: "{{ chronos_secret }}", dest: "/etc/chronos/store/credentials" }
+    - { content: "/etc/chronos/store/credentials", dest: "/etc/chronos/conf/mesos_authentication_secret_file" }
+    - { content: "{{ chronos_http_port }}", dest: "/etc/chronos/conf/http_port" }
+    - { content: "{{ chronos_https_port }}", dest: "/etc/chronos/conf/https_port" }
+    - { content: "{{ cluster_name }}", dest: "/etc/chronos/conf/cluster_name" }
   notify:
       - restart chronos
 
-- name: Add http_port file
-  copy:
-      content: "{{ chronos_http_port }}"
-      dest: /etc/chronos/conf/http_port
-  when: chronos_http_port is defined
-  notify:
-      - restart chronos
+# - name: Add http_port file
+#   copy:
+#       content: "{{ chronos_http_port }}"
+#       dest: /etc/chronos/conf/http_port
+#   when: chronos_http_port is defined
+#   notify:
+#       - restart chronos
 
-- name: Add https_port file
-  copy:
-      content: "{{ chronos_https_port }}"
-      dest: /etc/chronos/conf/https_port
-  when: chronos_https_port is defined
-  notify:
-      - restart chronos
+# - name: Add https_port file
+#   copy:
+#       content: "{{ chronos_https_port }}"
+#       dest: /etc/chronos/conf/https_port
+#   when: chronos_https_port is defined
+#   notify:
+#       - restart chronos
