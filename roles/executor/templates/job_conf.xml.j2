@@ -7,8 +7,8 @@
                 workers="{{ chronos_workers }}">
             <param id="chronos">{{ chronos_url }}</param>
             <param id="owner">galaxy-omtd@grnet.gr</param>
-            <param id="username">{{ chronos_user  }}</param>
-            <param id="password">{{ chronos_password  }}</param>
+            <param id="username">{{ chronos_http_user  }}</param>
+            <param id="password">{{ chronos_http_password  }}</param>
         </plugin>
         <plugin
             id="local" type="runner"

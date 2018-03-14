@@ -13,28 +13,31 @@
       - zookeeper
       - mesos-master
 
-- name: Specify mesos-slave ip file
+- name: Create /etc/mesos-slave/store directory
+  file:
+    path: /etc/mesos-slave/store
+    state: directory
+    recursive: yes
+
+- name: Set credentials
+  template:
+    src: credentials.json.j2
+    dest: "/etc/mesos-slave/store/credentials.json"
+    force: yes
+
+- name: Copy configuration files
   copy:
-      content: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}"
-      dest: /etc/mesos-slave/ip
-      owner: root
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    force: yes
+    owner: root
+  with_items:
+    - { content: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}", dest: "/etc/mesos-slave/ip" }
+    - { content: "{{ inventory_hostname }}", dest: "/etc/mesos-slave/hostname" }
+    - { content: "docker,mesos", dest: "/etc/mesos-slave/containerizers" }
+    - { content: "5mins", dest: "/etc/mesos-slave/executor_registration_timeout" }
+    - { content: "/etc/mesos-slave/store/credentials.json", dest: "/etc/mesos-slave/credentials" }
   notify:
-      - restart mesos-slave
+    - restart mesos-slave
 
-- name: Specify mesos-slave hostname file
-  copy:
-      content: "{{ inventory_hostname }}"
-      dest: /etc/mesos-slave/hostname
-      owner: root
-  notify:
-      - restart mesos-slave
-
-- name: Enable docker on mesos-slave
-  copy:
-      content: docker,mesos
-      dest: /etc/mesos-slave/containerizers
-
-- name: Set executor timeout
-  copy:
-      content: 5mins
-      dest: /etc/mesos-slave/executor_registration_timeout
+- debug: msg="{{ cluster_nodes[inventory_hostname] }}"

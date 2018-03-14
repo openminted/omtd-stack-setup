@@ -48,11 +48,6 @@ executor_db_password: executor
 chronos_workers: 12
 local_workers: 4
 
-# Chronos runner setup
-# chronos_url: chronos.example.org:8080
-chronos_user: openminted
-chronos_password: openminted
-
 # Gear1
 gear_1_docker_memory: 2048
 gear_1_docker_cpu: 1

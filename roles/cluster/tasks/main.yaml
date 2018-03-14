@@ -21,8 +21,3 @@
       src: zk.j2
       dest: /etc/mesos/zk
       force: yes
-  notify:
-      # OK, it's quite dirty.
-      - restart mesos-master
-      - restart mesos-slave
-      - restart chronos
