@@ -17,13 +17,17 @@
   file:
     path: /etc/mesos-slave/store
     state: directory
-    recursive: yes
+    recurse: yes
 
-- name: Set credentials
+- name: Upload configuration files
   template:
-    src: credentials.json.j2
-    dest: "/etc/mesos-slave/store/credentials.json"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     force: yes
+  with_items:
+    - { src: credentials.json.j2, dest: "/etc/mesos-slave/store/credentials.json" }
+    - { src: docker_config.j2, dest: "/etc/mesos-slave/docker_config" }
+    - { src: default_mesos.j2, dest: "/etc/default/mesos" }
 
 - name: Copy configuration files
   copy:
@@ -40,4 +44,4 @@
   notify:
     - restart mesos-slave
 
-- debug: msg="{{ cluster_nodes[inventory_hostname] }}"
+- debug: msg="{{ hostvars }}"

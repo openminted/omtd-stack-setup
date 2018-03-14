@@ -1,0 +1,12 @@
+LOGS=/var/log/mesos
+ULIMIT="-n 8192"
+
+# Uncommend these if you install letsencrypt certificates
+#LIBPROCESS_SSL_ENABLED=true
+#LIBPROCESS_SSL_CERT_FILE="/etc/letsencrypt/live/{{ fqdn }}/fullchain.pem"
+#LIBPROCESS_SSL_KEY_FILE=/etc/letsencrypt/live/{{ fqdn }}/privkey.pem
+#LIBPROCESS_SSL_CA_DIR=/etc/ssl/certs/
+#LIBPROCESS_SSL_VERIFY_DEPTH=1
+#LIBPROCESS_SSL_VERIFY_CERT=true
+
+LIBPROCESS_SSL_SUPPORT_DOWNGRADE=true

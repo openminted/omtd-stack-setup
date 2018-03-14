@@ -1,3 +1,6 @@
+# ansible_fqdn
+fqdn: "{{ hostvars[inventory_hostname].ansible_nodename }}.{{ hostvars[inventory_hostname].ansible_dns.domain }}"
+
 # True if python is needed to be installed first.
 install_python: True
 
