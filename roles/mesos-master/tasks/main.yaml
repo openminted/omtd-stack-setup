@@ -30,9 +30,12 @@
 
 - name: Set credentials
   template:
-    src: credentials.json.j2
-    dest: "/etc/mesos-master/store/credentials.json"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     force: yes
+  with_items:
+    - { src: credentials.json.j2, dest: "/etc/mesos-master/store/credentials.json" }
+    - { src: auth_rules.j2, dest: "/etc/mesos-master/store/auth_rules" }
 
 - name: Copy configuration files
   copy:
@@ -48,10 +51,9 @@
     - { content: "true", dest: "/etc/mesos-master/authenticate_http_readonly" }
     - { content: "true", dest: "/etc/mesos-master/authenticate_http_readwrite" }
     - { content: "{{ cluster_name }}", dest: "/etc/mesos-master/cluster" }
+    - { content: "/etc/mesos-master/store/auth_rules", dest: "/etc/mesos-master/acls" }
   notify:
     - restart mesos-master
-    - restart chronos
-    - restart mesos-slave
 
 - name: Disable mesos-slave service
   service:

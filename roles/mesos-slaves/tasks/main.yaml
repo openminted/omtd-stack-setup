@@ -43,5 +43,3 @@
     - { content: "/etc/mesos-slave/store/credentials.json", dest: "/etc/mesos-slave/credentials" }
   notify:
     - restart mesos-slave
-
-- debug: msg="{{ hostvars }}"
