@@ -1,6 +1,5 @@
 galaxy_version: dev
 force: yes
-chronos_url: www.example.org
 
 # NFS shares
 executor_directory: /srv/executor

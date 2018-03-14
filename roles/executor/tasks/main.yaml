@@ -73,7 +73,7 @@
 - name: Setup job_conf
   template:
     src: job_conf.xml.j2
-    dest: "{{ executor_directory }}/config/job_conf.yaml"
+    dest: "{{ executor_directory }}/config/job_conf.xml"
     force: yes
 
 - name: Setup systemd
