@@ -16,7 +16,7 @@
 - hosts: cluster_master
   remote_user: root
   roles:
-      - role: mesos-masters
+      - role: mesos-master
       - role: chronos
 
 - hosts: cluster_nodes

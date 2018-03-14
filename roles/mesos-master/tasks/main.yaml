@@ -1,0 +1,60 @@
+- name: Install Mesos
+  apt:
+      name: mesos=1.4.1-2.0.1
+  register: mesos_installed
+
+- name: Specify master ID of Zookeeper configuration
+  copy:
+      # Lets a have serial number for each master as ID.
+      content: "{{ groups.cluster_master.index(inventory_hostname) + 1}}"
+      dest: /etc/zookeeper/conf/myid
+      force: yes
+
+- name: Add Zookeeper configuration
+  lineinfile:
+      dest: /etc/zookeeper/conf/zoo.cfg
+      regexp: '^server.{{ item.0 + 1 }}='
+      line: "server.{{ item.0 + 1}}={{ hostvars[item.1].ansible_default_ipv4.address }}:2888:3888"
+      state: present
+      insertafter: '^server.{{ item.0 }}='
+  with_indexed_items: "{{ groups.cluster_master }}"
+  notify:
+      - restart zookeeper
+      - restart mesos-master
+
+- name: Create directory structure
+  file:
+    path: "/etc/mesos-master/store"
+    state: directory
+    recurse: yes
+
+- name: Set credentials
+  template:
+    src: credentials.json.j2
+    dest: "/etc/mesos-master/store/credentials.json"
+    force: yes
+
+- name: Copy configuration files
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    force: yes
+  with_items:
+    - { content: "{{ quorum_size }}", dest: "/etc/mesos-master/quorum" }
+    - { content: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}", dest: "/etc/mesos-master/ip" }
+    - { content: "{{ inventory_hostname }}", dest: /etc/mesos-master/hostname }
+    - { content: "/etc/mesos-master/store/credentials.json", dest: /etc/mesos-master/credentials }
+    - { content: "true", dest: "/etc/mesos-master/authenticate_agents" }
+    - { content: "true", dest: "/etc/mesos-master/authenticate_http_readonly" }
+    - { content: "true", dest: "/etc/mesos-master/authenticate_http_readwrite" }
+    - { content: "{{ cluster_name }}", dest: "/etc/mesos-master/cluster" }
+  notify:
+    - restart mesos-master
+    - restart chronos
+    - restart mesos-slave
+
+- name: Disable mesos-slave service
+  service:
+      name: mesos-slave
+      enabled: no
+      state: stopped
