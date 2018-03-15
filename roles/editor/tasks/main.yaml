@@ -36,6 +36,7 @@
       repo: "{{ galaxy_repo }}"
       dest: "{{ editor_directory }}"
       clone: yes
+      force: yes
       version: "{{ galaxy_version }}"
       accept_hostkey: yes
 
