@@ -3,6 +3,11 @@
       name: mesos=1.4.1-2.0.1
   register: mesos_installed
 
+- name: Hold mesos version
+  shell: apt-mark hold mesos
+  args:
+    executable: /bin/bash
+
 - name: Install chronos
   apt:
       name: chronos
