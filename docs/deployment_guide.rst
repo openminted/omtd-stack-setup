@@ -90,9 +90,34 @@ Now, install requirements and run the ansible playbook to install the services. 
     $ ansible-galaxy install -r requirements.yaml
     $ ansible-playbook -i hosts.production site.yaml
 
+Executor
+--------
+First go to :ref:`Reverse proxy and SSL <proxy_ssl>` to setup HTTP (and HTTPS).
+
+Test if you can reach your host through HTTP(s). You should be able to reach Galaxy, but not being able to do anything. Galaxy requires to create an admin user first. To do this, you must change the Galaxy configuration a bit, to allow users to be created.
+
+In `/srv/executor/config/galaxy.ini` find and commend out the following line::
+    allow_user_creation = False
+
+Restart galaxy::
+    $ service galaxy restart
+
+Connect to Galaxy through the weh UI (just the fqdn of the host). On the top menu: `Login or Register > Register`. Fill out the form. The email field should be in the `admin_users` field in `/etc/executor/config/galaxy.ini`.
+
+Uncommend `allow_user_creation = False` and restart galaxy. You are good to go.
+
 Editor
 ------
-Ansible takes care of all issues except the HTTP proxy. Setup the HTTP proxy and then go to :ref:`Reverse proxyes and SSL <proxy_ssl>` to setup HTTPS with letsencrypt. If you don't want to use letsencrypt, you can setup HTTPS in another way, which is not covered by the present guide.
+First go to :ref:`Reverse proxy and SSL <proxy_ssl>` to setup HTTP (and HTTPS).
+
+Then, try to connect to the host (just the IP). You should be redirected to Galaxy, but get rejected with this message: `Access to Galaxy is denied`.
+
+This is because the editor is configured to accept only remote users from a specific domain (`remote_user_maildomain`), who authenticate themselves with a secret (`remote_user_secret`). All users from this domain can use the editor, as long as their requests contain the secret.
+
+.. _proxy_ssl:
+Reverse proxy and SSL
+---------------------
+Our ansible scripts setup Apache2 as a reverse proxy on the hosts that need a reverse proxy, but only as HTTP.
 
 On the editor host, make sure '/etc/apache2/vhosts.conf' looks like this::
     DirectoryIndex index.html
@@ -100,7 +125,6 @@ On the editor host, make sure '/etc/apache2/vhosts.conf' looks like this::
     <VirtualHost *:80>
       ServerName 123.45.67.89
 
-      RewriteEngine on
       RewriteEngine on
       RewriteRule ^(.*) http://localhost:8080$1 [P]
     </VirtualHost>
@@ -111,16 +135,14 @@ Make sure these apache modules are enabled: ssl, rewrite, proxy, proxy_http::
 To enable a disabled module::
     $ a2enmod <module>
 
-Add some HTTPS support (e.g., :ref:`Reverse proxyes and SSL <proxy_ssl>`) and try to connect to the host. You should be redirected to Galaxy, but get a `Access to Galaxy is denied` message, because the editor is configured to accept only remote users from a specific domain (`remote_user_maildomain`), who authenticate themselves with a secret (`remote_user_secret`). All users from this domain can use the editor, as long as their requests contain the secret.
+Restart apache2:
+    $ service apache2 restart
 
-.. _proxy_ssl:
-Reverse proxys and SSL
-----------------------
-Our ansible scripts setup Apache2 as a reverse proxy on the hosts that need a reverse proxy, but only as HTTP. 
+At this point, thinks should work well without SSL, but that is going to change in the following lines.
 
-At this point, we need SSL on every host machine we use. This may change in the future, at least for some hosts, but for now it is the most straigh-forward way.
+First, remove the `RewriteRule` line from `/etc/apache2/sites-enabled/vhosts.conf`.
 
-In the following we install "let's encrypt" free certificates.
+In the following we install "let's encrypt" free certificates. If you don't want to use these, you must figure some other way to setup your HTTPS proxy.
 
 Ubuntu Hosts with apache2::
 	$ sudo apt-get install software-properties-common
