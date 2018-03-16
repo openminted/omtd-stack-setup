@@ -96,7 +96,7 @@ filter-with = proxy-prefix
 # may use a SQLAlchemy connection string to specify an external database
 # instead.  This string takes many options which are explained in detail in the
 # config file documentation.
-database_connection=postgresql://{{ editor_db_user }}:{{ editor_db_password }}/{{ editor_db_name }}
+database_connection=postgresql://{{ editor_db_user }}:{{ editor_db_password }}@localhost/{{ editor_db_name }}
 
 # If the server logs errors about not having enough database pool connections,
 # you will want to increase these values, or consider running more Galaxy
@@ -1014,7 +1014,7 @@ use_remote_user = True
 # method just returns bare usernames, set a default mail domain to be appended
 # to usernames, to become your Galaxy usernames (email addresses).
 #remote_user_maildomain = None
-remote_user_maildomain={{ remote_user_maildomain }}}
+remote_user_maildomain={{ remote_user_maildomain }}
 
 # If use_remote_user is enabled, the header that the upstream proxy provides
 # the remote username in defaults to HTTP_REMOTE_USER (the 'HTTP_' is prepended

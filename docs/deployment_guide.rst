@@ -82,11 +82,38 @@ edit "hosts.production" so that::
 In group_vars/executor::
 	chronos_url: <Cluster Manager FQDN with Chronos port>
 
+In groups_vars/editor::
+    remote_user_maildomain: <the domain of the user who is going to connect to the editor>
+    remote_user_secret: <a long, hard to guess string>
+
 Now, install requirements and run the ansible playbook to install the services. It might take a while::
     $ ansible-galaxy install -r requirements.yaml
     $ ansible-playbook -i hosts.production site.yaml
 
+Editor
+------
+Ansible takes care of all issues except the HTTP proxy. Setup the HTTP proxy and then go to :ref:`Reverse proxyes and SSL <proxy_ssl>` to setup HTTPS with letsencrypt. If you don't want to use letsencrypt, you can setup HTTPS in another way, which is not covered by the present guide.
 
+On the editor host, make sure '/etc/apache2/vhosts.conf' looks like this::
+    DirectoryIndex index.html
+
+    <VirtualHost *:80>
+      ServerName 123.45.67.89
+
+      RewriteEngine on
+      RewriteEngine on
+      RewriteRule ^(.*) http://localhost:8080$1 [P]
+    </VirtualHost>
+
+Make sure these apache modules are enabled: ssl, rewrite, proxy, proxy_http::
+    $ a2query -m <module>
+
+To enable a disabled module::
+    $ a2enmod <module>
+
+Add some HTTPS support (e.g., :ref:`Reverse proxyes and SSL <proxy_ssl>`) and try to connect to the host. You should be redirected to Galaxy, but get a `Access to Galaxy is denied` message, because the editor is configured to accept only remote users from a specific domain (`remote_user_maildomain`), who authenticate themselves with a secret (`remote_user_secret`). All users from this domain can use the editor, as long as their requests contain the secret.
+
+.. _proxy_ssl:
 Reverse proxys and SSL
 ----------------------
 Our ansible scripts setup Apache2 as a reverse proxy on the hosts that need a reverse proxy, but only as HTTP. 
@@ -114,4 +141,3 @@ Make sure the following lines are included in "/etc/apache2/sites-enabled/vhosts
 
 Resart apache2 and check that the host is redirecting to the correct place::
 	$ sudo service apache2 restart
-
