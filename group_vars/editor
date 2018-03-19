@@ -1,1 +1,5 @@
 force: yes
+
+# Remote user setup
+remote_user_maildomain: example.com
+remote_user_secret: pleasechangethistosomethinglessobvious

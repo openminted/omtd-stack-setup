@@ -3,10 +3,6 @@ editor_directory: /srv/editor
 galaxy_prefix: /galaxy
 galaxy_admin: galaxy-admin@example.org
 
-# Remote user setup
-remote_user_maildomain: example.com
-remote_user_secret: pleasechangethistosomethinglessobvious
-
 # Directory which holds object store data. This directory is mounted to an nfs
 # server.
 object_store_directory: "{{ editor_directory }}/database"

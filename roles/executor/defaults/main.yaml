@@ -1,7 +1,6 @@
 # Directory to host executor galaxy code.
 executor_directory: /srv/executor
 galaxy_prefix: /galaxy
-galaxy_admin: galaxy-admin@example.org
 
 # Directory which holds object store data. This directory is mounted to an nfs
 # server.

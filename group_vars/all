@@ -8,12 +8,15 @@ ansible_python_interpreter: /usr/bin/python
 
 cluster_name: openminted
 
+# Communication between Galaxy Executor and Chronos
 chronos_http_user: chronosadmin
 chronos_http_password: chronospassword
 
+# Communication between Chronos and Mesos master
 chronos_principal: "chronos.omtd"
 chronos_secret: "chronos.secret"
 
+# Communication between Mesos master and slaves
 # Replace with your node inventory hostnames and credentials
 #   add/remove nodes if needed
 cluster_nodes:

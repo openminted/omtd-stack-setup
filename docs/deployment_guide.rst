@@ -6,28 +6,26 @@ run "Synnefo".
 
 Services
 --------
-If all services are split as much as possible, then:
+If all services are split as much as possible, then::
+    Executor Galaxy - executes TDM (Text and Data Mining) tools and workflows, used through REST API
+    Editor Galaxy - offers an editor for creating and editing workflows
+    NFS Server - offers a shared folder for the tools between the two galaxies, as well as a shared folder between the Executor Galaxy and the cluster nodes
+    Chronos scheduler - schedulers the execution of tools
+    Mesos cluster manager - manages the cluster that executes the tools
+    Mesos slave - handles execution on slave nodes
+    CAdvisor - monitors the execution of tools on the hosts they are executed
+    Prometheus-node-exporter - exports the results of the monitoring to the Prometheus aggregator
+    Prometheus - monitors the Mesos slaves and offers the results through a REST API
+    Grafana - visualazation of Prometheus monitoring
+    Docker Registry - hosts the images of the TDM tools
 
-Executor Galaxy - executes TDM (Text and Data Mining) tools and workflows, used through REST API
-Editor Galaxy - offers an editor for creating and editing workflows
-NFS Server - offers a shared folder for the tools between the two galaxies, as well as a shared folder between the Executor Galaxy and the cluster nodes
-Chronos scheduler - schedulers the execution of tools
-Mesos cluster manager - manages the cluster that executes the tools
-Mesos slave
-CAdvisor - monitors the execution of tools on the hosts they are executed
-Prometheus-node-exporter - exports the results of the monitoring to the Prometheus aggregator
-Prometheus - monitors the Mesos slaves and offers the results through a REST API
-Grafana - visualazation of Prometheus monitoring
-Docker Registry - hosts the images of the TDM tools
-
-Suggested setup per host:
-
-Executor: Executor Galaxy + NFS Server
-Editor: Editor Galaxy
-Cluster Manager: Chronos scheduler + Mesos master
-Cluster Nodes: Mesos slave, CAdvisor, Node-Exporter
-Monitoring: Prometheus + Grafana
-Tool Registry: Docker Registry
+Suggested setup per host::
+    Executor: Executor Galaxy + NFS Server
+    Editor: Editor Galaxy
+    Cluster Manager: Chronos scheduler + Mesos master
+    Cluster Nodes: Mesos slave, CAdvisor, Node-Exporter
+    Monitoring: Prometheus + Grafana
+    Tool Registry: Docker Registry
 
 Note: You can start with 2 or 3 nodes. It is easy to scale up (or down) later.
 
@@ -79,10 +77,30 @@ edit "hosts.production" so that::
     [editor]
     <Editor IP>
 
-In group_vars/executor::
-	chronos_url: <Cluster Manager FQDN with Chronos port>
 
-In groups_vars/editor::
+Edit `group_vars/all` to set credentials for interservice communication. Make sure to replace passwords and secrets with new ones that are long and hard to guess.::
+    chronos_http_user: chronosadmin
+    chronos_http_password: chronospassword
+
+    chronos_principal: "chronos.omtd"
+    chronos_secret: "chronos.secret"
+
+    cluster_nodes:
+      "83.212.107.159": {
+        principal: "node1.omtd",
+        secret: "node1.secret"
+      }
+      "83.212.107.160": {
+        principal: "node2.omtd",
+        secret: "node2.secret"
+      }
+
+.. importand: Add all your `cluster_nodes` here, otherwise they won't work
+
+In group_vars/executor::
+    galaxy_admin: <email of the galaxy admin user>
+
+In group_vars/editor::
     remote_user_maildomain: <the domain of the user who is going to connect to the editor>
     remote_user_secret: <a long, hard to guess string>
 
@@ -94,7 +112,20 @@ Executor
 --------
 First go to :ref:`Reverse proxy and SSL <proxy_ssl>` to setup HTTP (and HTTPS).
 
-Test if you can reach your host through HTTP(s). You should be able to reach Galaxy, but not being able to do anything. Galaxy requires to create an admin user first. To do this, you must change the Galaxy configuration a bit, to allow users to be created.
+Now, make sure the following lines are included in "/etc/apache2/sites-enabled/vhosts-le-ssl.conf"::
+    <VirtualHost *:443>
+        ...
+        <Directory>
+            Require all granted
+        </Directory>
+        ...
+    </VirtualHost>
+
+Restart apache2.
+
+Test if you can reach your host through HTTP(s). You should be able to reach Galaxy.
+
+Galaxy requires to create an admin user first. To do this, you must change the Galaxy configuration to allow users to be created.
 
 In `/srv/executor/config/galaxy.ini` find and commend out the following line::
     allow_user_creation = False
@@ -102,7 +133,7 @@ In `/srv/executor/config/galaxy.ini` find and commend out the following line::
 Restart galaxy::
     $ service galaxy restart
 
-Connect to Galaxy through the weh UI (just the fqdn of the host). On the top menu: `Login or Register > Register`. Fill out the form. The email field should be in the `admin_users` field in `/etc/executor/config/galaxy.ini`.
+Connect to Galaxy through the web UI (just the fqdn of the host). On the top menu click `Login or Register > Register`. Fill out the form. The email field should be in the `admin_users` field in `/etc/executor/config/galaxy.ini`.
 
 Uncommend `allow_user_creation = False` and restart galaxy. You are good to go.
 
@@ -113,6 +144,14 @@ First go to :ref:`Reverse proxy and SSL <proxy_ssl>` to setup HTTP (and HTTPS).
 Then, try to connect to the host (just the IP). You should be redirected to Galaxy, but get rejected with this message: `Access to Galaxy is denied`.
 
 This is because the editor is configured to accept only remote users from a specific domain (`remote_user_maildomain`), who authenticate themselves with a secret (`remote_user_secret`). All users from this domain can use the editor, as long as their requests contain the secret.
+
+Mesos and Chronos
+-----------------
+Everything is set up, but it is good to secure communication with SSL. You can do that with letsencrypt, if you follow the instructions in :ref:`SSL without proxy <just_ssl>`.
+
+Cluster nodes
+-------------
+Everything is set up, but it is good to secure communication with SSL. You can do that with letsencrypt, if you follow the instructions in :ref:`SSL without proxy <just_ssl>`.
 
 .. _proxy_ssl:
 Reverse proxy and SSL
@@ -144,22 +183,39 @@ First, remove the `RewriteRule` line from `/etc/apache2/sites-enabled/vhosts.con
 
 In the following we install "let's encrypt" free certificates. If you don't want to use these, you must figure some other way to setup your HTTPS proxy.
 
-Ubuntu Hosts with apache2::
-	$ sudo apt-get install software-properties-common
-	$ sudo add-apt-repository ppa:certbot/certbot
-	$ sudo apt-get update
-	$ sudo apt-get install python-certbot-apache
-	$ sudo certbot --apache
-		pick "vhosts.conf" and HTTPS only when asked
+In Debian::
+    $ echo 'deb http://ftp.debian.org/debian jessie-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
+    $ sudo apt-get update
+    $ sudo apt-get install python-certbot-apache -t jessie-backports
 
-Make sure the following lines are included in "/etc/apache2/sites-enabled/vhosts-le-ssl.conf"::
-	<VirtualHost *:443>
-		...
-		<Directory>
-	        Require all granted
-    	</Directory>
-    	...
-    </VirtualHost>
+In Ubuntu::
+    $ sudo apt-get install software-properties-common
+    $ sudo add-apt-repository ppa:certbot/certbot
+    $ sudo apt-get update
+    $ sudo apt-get install certbot
+
+Automatically set up certificates::
+    $ sudo certbot --apache
+        pick "vhosts.conf" and HTTPS only when asked
 
 Resart apache2 and check that the host is redirecting to the correct place::
-	$ sudo service apache2 restart
+    $ sudo service apache2 restart
+
+.. _just_ssl:
+SSL without Proxy
+-----------------
+
+In Debian::
+    $ echo 'deb http://ftp.debian.org/debian jessie-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
+    $ sudo apt-get update
+    $ sudo apt-get install certbot -t jessie-backports
+
+In Ubuntu::
+    $ sudo apt-get install software-properties-common
+    $ sudo add-apt-repository ppa:certbot/certbot
+    $ sudo apt-get update
+    $ sudo apt-get install certbot
+
+Now, install certbot and get the certificates. Make sure to replace `example.com` with your domain:
+    $ sudo certbot certonly --standalone -d example.com
+    $ sudo certbot renew

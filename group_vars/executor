@@ -1,5 +1,6 @@
 galaxy_version: dev
 force: yes
+galaxy_admin: galaxy-admin@example.org
 
 # NFS shares
 executor_directory: /srv/executor
