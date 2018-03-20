@@ -6,6 +6,24 @@
       - python
       - python-passlib
       - python-pip
+      - apache2
+      - apache2-utils
+
+- name: Enable apache2 modules
+  shell: "a2enmod {{ item }}"
+  with_items:
+    - authn_file
+    - authn_core
+    - authz_groupfile
+    - authz_user
+    - authz_core
+    - auth_basic
+    - access_compat
+    - headers
+    - ssl
+    - proxy
+    - proxy_http
+  notify: restart apache2
 
 - name: Make sure we can use docker_container
   pip:
@@ -24,7 +42,7 @@
       image: registry:2
       name: registry
       ports:
-          - "5000:5000"
+          - "127.0.0.1:5000:5000"
       state: started
       volumes:
           - "/mnt/registry:/var/lib/registry"

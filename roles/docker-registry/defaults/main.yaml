@@ -1,35 +1,11 @@
-registry_username: openminted
-registry_password: OpenMinTeD
-
 server_root: /usr/local/apache2
 
-apache_global_vhost_settings: |
-    ServerRoot "{{ server_root }}"
-
-apache_mods_enabled:
-    - authn_file.load
-    - authn_core.load
-    - authz_groupfile.load
-    - authz_user.load
-    - authz_core.load
-    - auth_basic.load
-    - access_compat.load
-    - headers.load
-    - ssl.load
-    - proxy.load
-    - proxy_http.load
-
-apache_create_vhosts: True
-apache_ssl_protocol: all -SSLv2 -SSLv3 -TLSv1
-apache_ssl_cipher_suite: EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
-apache_vhosts_version: 2.4
+apache_global_vhost_settings: ServerRoot "{{ server_root }}"
 apache_remove_default_vhost: True
 
-apache_vhosts_ssl:
+apache_vhosts:
   - servername: "{{ inventory_hostname }}"
-    certificate_file: "{{ server_root }}/conf/domain.crt"
-    certificate_key_file: "{{ server_root }}/conf/domain.key"
-    extra_parameters: |
+  - extra_parameters: |
         Header always set "Docker-Distribution-Api-Version" "registry/2.0"
         Header onsuccess set "Docker-Distribution-Api-Version" "registry/2.0"
         RequestHeader set X-Forwarded-Proto "https"

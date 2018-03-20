@@ -9,9 +9,9 @@
 - hosts: docker_registry
   remote_user: root
   roles:
-      - geerlingguy.apache
       - lexrus.ansible-role-docker
       - role: docker-registry
+      - geerlingguy.apache
 
 - hosts: cluster_master
   remote_user: root
@@ -32,10 +32,10 @@
 - hosts: executor
   remote_user: root
   roles:
-      - geerlingguy.apache
       - lexrus.ansible-role-docker
       - role: executor
       - role: nfs
+      - geerlingguy.apache
 
 - hosts: editor
   remote_user: root
@@ -43,5 +43,5 @@
     - set_fact:
         tools_share: "{{ hostvars[groups['executor'][0]].tools_share }}"
   roles:
-      - geerlingguy.apache
       - role: editor
+      - geerlingguy.apache
