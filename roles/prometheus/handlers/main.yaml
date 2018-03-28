@@ -1,0 +1,10 @@
+- name: restart prometheus
+  service:
+      name: prometheus
+      enabled: yes
+      state: restarted
+
+- name: restart apache2
+  service:
+      name: apache2
+      state: restarted

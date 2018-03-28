@@ -34,7 +34,6 @@ apache_mods_enabled:
   - rewrite.load
   - proxy.load
   - proxy_http.load
-  - proxy.conf
 
 apache_remove_default_vhost: True
 

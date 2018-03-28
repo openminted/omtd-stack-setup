@@ -1,0 +1,18 @@
+# Proxy
+apache_vhosts:
+  - servername: "{{ inventory_hostname }}"
+    extra_parameters: |
+      ProxyPass /prometheus/ http://127.0.0.1:9090/prometheus/
+      ProxyPassReverse /prometheus/ http://127.0.0.1:9090/prometheus/
+
+apache_mods_enabled:
+  - proxy.load
+  - proxy_http.load
+
+# Resolve monitor host domain
+domain: "{% if 'domain' in hostvars[inventory_hostname].ansible_dns %}\
+  {{ hostvars[inventory_hostname].ansible_dns.domain}}\
+  {% else %}\
+  {{ hostvars[inventory_hostname].ansible_dns.search[0]}}\
+  {% endif %}"
+fqdn: "{{ hostvars[inventory_hostname].ansible_nodename }}.{{ domain }}"

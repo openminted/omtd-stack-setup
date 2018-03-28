@@ -37,6 +37,12 @@
       - role: nfs
       - geerlingguy.apache
 
+- hosts: monitor
+  remote_user: root
+  roles:
+      - geerlingguy.apache
+      - role: prometheus
+
 - hosts: editor
   remote_user: root
   pre_tasks:

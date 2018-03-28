@@ -1,0 +1,16 @@
+- name: Install Prometheus
+  apt: 
+    name: prometheus
+  register: prometheus_installed
+
+- name: Setup web address
+  copy:
+    content: "ARGS='-web.listen-address=127.0.0.1:9090 -web.external-url=http://{{ fqdn }}/prometheus/'"
+    dest: /etc/default/prometheus
+    force: yes
+
+- name: Upload Prometheus configuration
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify: restart prometheus
