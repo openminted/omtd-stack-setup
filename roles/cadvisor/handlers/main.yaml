@@ -1,0 +1,5 @@
+- name: restart cadvisor
+  service:
+    name: cadvisor
+    enabled: yes
+    state: restarted

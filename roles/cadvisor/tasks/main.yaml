@@ -1,0 +1,26 @@
+- name: Install CAdvisor
+  shell: |
+    docker inspect google/cadvisor ||\
+    docker docker create --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw \
+    --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro \
+    --volume=/dev/disk/:/dev/disk:ro --publish=8080:8080 --name=cadvisor \
+    google/cadvisor:latest
+  register: cadvisor_installed
+
+- name: Setup CAdvisor
+  template:
+    src: cadvisor.service.j2
+    dest: /etc/systemd/system/cadvisor.service
+    force: yes
+  notify:
+    - restart cadvisor
+
+- name: Fix GRUB memory issue
+  lineinfile:
+    path: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX="cgroup_enable=memory"
+    force: yes
+    state: present
+
+- name: Update GRUB
+  shell: update-grub2

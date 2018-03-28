@@ -1,0 +1,6 @@
+- name: Install Prometheus Node Exporter
+  apt:
+    name: prometheus-node-exporter
+    state: latest
+  notify:
+    - restart prometheus-node-exporter

@@ -28,6 +28,8 @@
       - lexrus.ansible-role-docker
       - role: mesos-slaves
       - role: nfs-cluster-clients
+      - role: prometheus-node-exporter
+      - role: cadvisor
 
 - hosts: executor
   remote_user: root
