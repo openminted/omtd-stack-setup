@@ -137,6 +137,38 @@ Connect to Galaxy through the web UI (just the fqdn of the host). On the top men
 
 Uncommend `allow_user_creation = False` and restart galaxy. You are good to go.
 
+LVM for executor
+----------------
+You can hide the database volume as an LVM. This will allow easy (but manual) storage scaling (see the operations chapter).
+
+1. Install lvm:
+
+    $ apt install lvm
+
+2. Find the unused physical volume(s) and prepare it(them) ::
+
+    $ fdisk -l
+    ...
+    Disk /dev/vdb: 380 GiB, 408021893120 bytes, 796917760 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    ...
+    $ pvcreate /dev/vdb [/dev/vdc [...]]
+
+3. Create a new LVM group `nfsstore`, then create a logical partition and format it::
+
+    $ vgcreate nfsstore /dev/vdb [/dev/vdc [...]]
+    $ lvcreate -l 100%FREE -n nfs_logical nfsstore
+    $ mke2fs -t ext4 /dev/nfsstore/nfs_logical
+
+4. Mount it::
+
+    $ echo "/dev/nfsstore/nfs_logical /srv/executor/database ext4 defaults,nofail 0 0">>/etc/fstab
+    $ mount -a
+
+Make sure the target directory `/srv/executor/database` exists (in some deployments it is `/srv/galaxy/database`).
+
 Editor
 ------
 First go to :ref:`Reverse proxy and SSL <proxy_ssl>` to setup HTTP (and HTTPS).

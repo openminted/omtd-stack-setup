@@ -209,7 +209,7 @@ Docker registry
 Runs as a docker container.
 Logs: `docker logs registry`
 
-Start, stop, restart or check the status of the service with systemd::
+Start, stop, restart or check the status of the service::
 
     $ docker <start|stop|restart|inspect> registry
 
@@ -248,6 +248,22 @@ always restart or reload apache2 afterwards.
 
 In this host, Apache2 acts a reverse proxy redirecting `/v2` to `localhost:5000/v2`. Also, it guards the `/v2` location with a password.
 
+Test if the service works
+-------------------------
+From an external machine (e.g., your workstation)::
+
+    $ docker pull hello-world
+    $ docker login <docker_registry fqdn>
+    username: <registry_username from group_vars/all>
+    password: <registry_password from group_vars/all>
+    $ docker tag hello-world <docker_registry fqdn>:hello-world
+    $ docker push <docker_registry fqdn>:hello-world
+    $ docker pull <docker_registry fqdn>:hello-world
+
+Typically, the username and password of the registry are defined in `groups_vars/all` (ansible) as "registry_username" and "registry_password".
+
+If all these commands complete without an error, the registry works.
+
 Monitor
 =======
 Services run:
@@ -282,27 +298,139 @@ Prometheus: /prometheus/ --> http://127.0.0.1:9090/prometheus/
 Cluster nodes
 =============
 Services run:
-- Docker engine logged to "docker registry"
+- Docker engine logged in "docker registry"
 - Prometheus node exporter
 - CAdvisor as a docker container
 
 Docker engine
 -------------
+Start, stop, restart or check the status of the service with systemd::
+
+    $ sudo service docker <start|stop|restart|status>
+
+Test if the engine can pull from the docker registry by trying out the test in `Test if the service works` section.
 
 Prometheus node exporter
 ------------------------
+Logs: `cat /var/log/syslog|grep prometheus`.
+
+Start, stop, restart or check the status of the service with systemd::
+
+    $ sudo service prometheus-node-exporter <start|stop|restart|status>
 
 CAdvisor
 --------
+Logs: `docker logs cadvisor`
+
+Start, stop, restart or check the status of the service::
+
+    $ docker <start|stop|restart|inspect> cadvisor
 
 How to add a node
 =================
+1. Provision a new virtual Machine with Debian Jessie (tested) or similar (unteste).
+
+2. Make sure you have SSH access to this VM from the host running ansible.
+
+3. Add the VM IP in your `hosts` (or `hosts.production`, or whatever you use) file inside the ansible script, under the `cluster_nodes` section.
+
+4. Add this in `cluster_nodes` dict which you can find in `group_vars/all`::
+
+    "123.45.67.89": {
+        principal: "nodeX.omtd",
+        secret: "nodeX.secret"
+    }
+
+but make sure to replace `123.45.67.89` with the VM IP, change the principal to something unique (if it is the 6th node, `node6.omtd` would do) and the secret to something less easy to guess.
+
+5. Install with ansible::
+
+    $ ansible-playbook -i hosts -l cluster_master,cluster_nodes
 
 How to remove a node
 ====================
+1. In `hosts` (or `hosts.production` or whatever) remove the IP of the node from the `cluster_nodes` list
+
+2. In `group_vars/all` remove the related section (IP, prinsipal and secret) from the `cluster_nodes` dict variable
+
+3. Reset the cluster node with ansible::
+
+    $ ansible-playbook -i hosts -l cluster_master
+
+The node is not connected to the cluster anymore, you can destroy it or use it otherwise. If you don't destroy the node, make sure prometheus-node-exporter does not send scraps to the prometheus server (e.g., stop the exporter service).
+
+How to mount a volume
+=====================
+General purpose instructions, after you create a volume on your cloud and attach it on a VM::
+    $ fdisk -l
+    $ fdisk /dev/vdb
+     <type:>    n
+     <type:>  p
+     <type:>  w
+    $ mke2fs -t ext4 /dev/vdb1
+     #  note down Filesystem UUID: f090a4e2-ab78-49a6-9be3-8c07161c4f0b
+    $ mkdir -p /volumes/nfs1
+    $ echo "UUID=f090a4e2-ab78-49a6-9be3-8c07161c4f0b /volumes/nfs1 ext4 errors=remount-ro 0 1" >> /etc/fstab
 
 How to add disk space
 =====================
+The main storage space is an LVM (Logical VoluMe) disk mounted on the `executor` VM, which is shared with NFS to every cluster node. Practically, an LVM is a group of physical volumes which behaves as a single disk.
+
+Lets see what's inside our `nfsstore` LVM::
+
+    $ vgs
+      VG       #PV #LV #SN Attr   VSize   VFree
+      nfsstore   2   1   0 wz--n- 699.99g    0 
+    $ pvs -o+pv_used
+      PV         VG       Fmt  Attr PSize   PFree Used
+      /dev/vdb   nfsstore lvm2 a--  380.00g    0  380.00g
+      /dev/vdc   nfsstore lvm2 a--  320.00g    0  320.00g
+
+1. Create a new volume and attach it on the `executor` VM, using your cloud tools e.g., in ~okeanos::
+
+    $ kamaki volume create --size 200 --name omtd_3 --server-id <executor VM id> --project-id <openinted project id>
+
+2. Log in `executor` and find the new, unformated volume::
+
+    $ fdisk -l
+    ...
+    Disk /dev/vdd: 200 GiB, 203097383680 bytes, 521088640 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    ...
+
+3. Prepare the volume for LVM::
+
+    $ pvcreate /dev/vdd
+
+3. Extend the volume group and the logical partition::
+
+    $ vgextend nfsstore /dev/vdd
+    $ lvextend /dev/nfsstore/nfs_logical /dev/vdd
+    $ resize2fs /dev/nfsstore/nfs_logical
+
+Done!
 
 How to reduce disk space
 ========================
+Make sure you have a backup of everything in `/srv/executor/database` and then proceed.
+
+List all the physical volumes in LVM::
+
+    $ pvs -o+pv_used
+      PV         VG       Fmt  Attr PSize   PFree Used
+      /dev/vdb   nfsstore lvm2 a--  380.00g    0  380.00g
+      /dev/vdc   nfsstore lvm2 a--  320.00g    0  320.00g
+      /dev/vdd   nfsstore lvm2 a--  200.00g    0  200.00g
+
+For demonstration purposes, we assume you want to remove the 200G volume, thus reducing the VLM storage by 200G. this volume is `/dev/vdd`.
+
+So, lets remove `/dev/vdd`::
+
+    $ pvmove /dev/vdd
+    $ vgreduce nfsstore /dev/vdd
+
+And we are done! You can now use `/dev/vdd` for some other purpose, or destroy it, if you don't need it anymore.
+
+Expalanation: `pvmove` moves all data stored in `/dev/vdd` to the other physical volumes, while `vgreduce` removes the volume from LVM.
