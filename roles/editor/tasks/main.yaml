@@ -1,6 +1,6 @@
 - fail:
     msg: You need to specify exactly one host to run the editor.
-  when: "{{ groups.editor|length != 1}}"
+  when: groups.editor|length != 1
 
 - name: Add server name to the apache.conf
   lineinfile:

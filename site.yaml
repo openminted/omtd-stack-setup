@@ -4,7 +4,7 @@
   tasks:
       - name: Install python
         raw: "apt-get update -y && apt-get install {{ python_package }} -y"
-        when: "{{ install_python }}"
+        when: install_python
 
 - hosts: docker_registry
   remote_user: root
