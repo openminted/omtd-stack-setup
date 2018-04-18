@@ -1,10 +1,24 @@
+Table of contents
+=================
+- Hosts:
+  - [Executor](#executor)
+  - [Editor](#editor)
+  - [Cluster Manager](#cluster-manager)
+  - [Docker registry](#docker-registry)
+  - [Monitor](#monitor)
+  - [Cluster nodes](#cluster-nodes)
+- How to
+  - [add a node](#how-to-add-a-node)
+  - [remove a node](#how-to-remove-a-node)
+  - [mount a volume](#how-to-mount-a-volume)
+  - [add disk space](#how-to-add-disk-space)
+  - [reduce disk space](#how-to-reduce-disk-space)
+
 Executor
 ========
-
-Services run:
-- Galaxy for execution
-- NFS Server sharing two folders
-- Apache2 as a reverse proxy
+- [Galaxy for execution](#galaxy)
+- [NFS Server sharing two folders](#nfs-server)
+- [Apache2 as a reverse proxy](#apache2)
 
 Galaxy
 ------
@@ -73,10 +87,9 @@ localhost:8080
 
 Editor
 ======
-Services run:
-- Galaxy for editing
-- NFS client to mount one folder
-- Apache2 as a reverse proxy
+- [Galaxy for editing](#galaxy-1)
+- [NFS client to mount one folder](#nfs-client)
+- [Apache2 as a reverse proxy](#apache2-1)
 
 Galaxy
 ------
@@ -133,10 +146,10 @@ Same as Apache2 for Executor.
 
 Cluster Manager
 ===============
-Services run:
-- Zookeeper for service discovery
-- Chronos for scheduling
-- Mesos master for cluster management
+- [Zookeeper for service discovery](#zookeeper)
+- [Chronos for scheduling](#chronos)
+- [Mesos master for cluster management](#mesos-master)
+- [Troubleshooting](#troubleshooting)
 
 Zookeeper
 ---------
@@ -241,10 +254,10 @@ Have fun debugging Chronos/Mesos.
 
 Docker registry
 ===============
-Services run:
-- Docker engine
-- Docker registry
-- Apache2 as a reverse proxy and passwor security
+- [Docker engine](#docker-engine)
+- [Docker registry](#docker-registry)
+- [Apache2 as a reverse proxy and passwor security](#apache2-2)
+- [Test if the service works](#test-if-the-service-works)
 
 Docker engine
 -------------
@@ -317,10 +330,9 @@ If all these commands complete without an error, the registry works.
 
 Monitor
 =======
-Services run:
-- Prometheus for log aggregation and REST API
-- Grafana for visualization
-- Apache2 as reverse proxy
+- [Prometheus for log aggregation and REST API](#prometheus)
+- [Grafana for visualization](#grafana)
+- [Apache2 as reverse proxy](#apache2-3)
 
 Prometheus
 ----------
@@ -350,10 +362,9 @@ Prometheus: /prometheus/ --> http://127.0.0.1:9090/prometheus/
 
 Cluster nodes
 =============
-Services run:
-- Docker engine pulling images from our "docker registry" service
-- Prometheus node exporter
-- CAdvisor as a docker container
+- [Docker engine pulling images from our "docker registry" service](#docker-engine-1)
+- [Prometheus node exporter](#prometheus-node-exporter)
+- [CAdvisor as a docker container](#cadvisor)
 
 Docker engine
 -------------
