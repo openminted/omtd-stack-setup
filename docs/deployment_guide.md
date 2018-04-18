@@ -31,7 +31,7 @@ If all services are split as much as possible, then::
 - CAdvisor - monitors the execution of tools on the hosts they are executed
 - Prometheus-node-exporter - exports the results of the monitoring to the Prometheus aggregator
 - Prometheus - monitors the Mesos slaves and offers the results through a REST API
-- Grafana - visualazation of Prometheus monitoring
+- Grafana - visualization of Prometheus monitoring
 - Docker Registry - hosts the images of the TDM tools
 
 Suggested setup per host::
@@ -56,7 +56,7 @@ for the NFS shares (may use LVM).
 - Editor VM: Ubuntu 16.04 LTS with reasonable resources
 - Cluster Manager: Ubuntu 16.04 LTS with reasonable resources
 -  Monitoring: Ubuntu 16.04 LTS with reasonable resources
--  Tool Registry: Debian Jessie with reasonable resources and sizeable disk space (e.g., a few hundred gigs)
+-  Tool Registry: Debian Jessie with reasonable resources and sizable disk space (e.g., a few hundred gigs)
 -  Cluster Nodes: Debian Jessie with as much CPU and RAM as possible
 
 Make sure you have your public key in `/root/.ssh/authorized_keys` of
@@ -287,7 +287,7 @@ Automatically set up certificates:
     $ sudo certbot --apache
     :   pick "vhosts.conf" and HTTPS only when asked
 ```
-Resart apache2 and check that the host is redirecting to the correct place:
+Restart apache2 and check that the host is redirecting to the correct place:
 ```$ sudo service apache2 restart```
 
 SSL without Proxy

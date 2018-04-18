@@ -241,7 +241,7 @@ slaves or mesos slaves running on cluster manager. Then restart them in
 this order (order maters) :
 1. Mesos master on cluster manager
 2. Chronos on cluster manager
-3. mesos slaves on every node
+3. Mesos slaves on every node
 
 Also, check the credentials on Mesos master. Do they much with the
 credentials on the nodes and Chronos?
@@ -256,7 +256,7 @@ Docker registry
 ===============
 - [Docker engine](#docker-engine)
 - [Docker registry](#docker-registry)
-- [Apache2 as a reverse proxy and passwor security](#apache2-2)
+- [Apache2 as a reverse proxy and password security](#apache2-2)
 - [Test if the service works](#test-if-the-service-works)
 
 Docker engine
@@ -397,7 +397,7 @@ How to add a node
 =================
 
 1.  Provision a new virtual Machine with Debian Jessie (tested) or
-    similar (unteste).
+    similar (untested).
 2.  Make sure you have SSH access to this VM from the host
     running ansible.
 3.  Add the VM IP in your hosts (or hosts.production, or whatever
@@ -520,5 +520,5 @@ So, lets remove `/dev/vdd`:
 And we are done! You can now use `/dev/vdd` for some other purpose, or
 destroy it, if you don't need it anymore.
 
-Expalanation: `pvmove` moves all data stored in `/dev/vdd` to the other
+Explanation: `pvmove` moves all data stored in `/dev/vdd` to the other
 physical volumes, while vgreduce removes the volume from LVM.
