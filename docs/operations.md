@@ -118,10 +118,6 @@ debugging, go to
 NFS client
 ----------
 Logs: `cat /var/log/syslog|grep nfs`.
-
-Start, stop, restart or check the status of the service with systemd:
-```bash
-    $ sudo service nfs-client <start|stop|restart|status>
 ```
 Make sure the `/srv/editor/tools` directory is mounted as an NFS share.
 One way to do this:
@@ -131,7 +127,7 @@ One way to do this:
     [...]
     <executor IP>:/srv/executor/tools   59G  7.5G   49G  14% /srv/editor/tools
 ```
-If this doesn't work, make sure /etc/fstab contains a line like this:
+If this doesn't work, make sure nfs-client is installed and `/etc/fstab` contains a line like this:
 ```bash
     <executor IP>:/srv/executor/tools /srv/editor/tools nfs defaults 0 0
 ```
@@ -365,6 +361,7 @@ Cluster nodes
 - [Docker engine pulling images from our "docker registry" service](#docker-engine-1)
 - [Prometheus node exporter](#prometheus-node-exporter)
 - [CAdvisor as a docker container](#cadvisor)
+- [NFS client](#nfs-client-2)
 
 Docker engine
 -------------
@@ -392,6 +389,27 @@ Start, stop, restart or check the status of the service:
 ```bash
     $ docker <start|stop|restart|inspect> cadvisor
 ```
+
+NFS client
+----------
+Logs: `cat /var/log/syslog|grep nfs`.
+```
+Make sure the `/srv/executor/datavase` directory is mounted as an NFS share.
+One way to do this:
+```bash
+    $ df -h
+    Filesystem                     Size  Used Avail Use% Mounted on
+    [...]
+    <executor IP>:/srv/executor/database   59G  7.5G   49G  14% /srv/executor/database
+```
+If this doesn't work, make sure nfs-client is installed and `/etc/fstab` contains a line like this:
+```bash
+    <executor IP>:/srv/executor/database /srv/editor/database nfs defaults 0 0
+```
+Check that all elements (executor IP, NFS server directory, NFS client
+directory) exist and are correct and mount again:
+```bash
+    $ mount /srv/executor/database
 
 How to add a node
 =================
