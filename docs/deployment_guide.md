@@ -81,26 +81,21 @@ Edit "hosts.production" so that:
     [docker_registry]
     <Tool Registry IP>
 
-    [nfs_clients]
-    <Cluster Node 1 IP>
-    <Cluster Node 2 IP>
-    ...
-
-    [mesos_masters]
+    [cluster_master]
     <Cluster Manager IP>
 
-    [mesos_slaves]
+    [cluster_nodes]
     <Cluster Node 1 IP>
     <Cluster Node 2 IP> ...
-
-    [chronos]
-    <Cluster Manager IP>
 
     [executor]
     <Executor IP>
 
     [editor]
     <Editor IP>
+
+    [monitor]
+    <Monitor IP>
 ```
 Edit `group_vars/all` to set credentials for interservice communication. Make sure to replace passwords and secrets with new ones that are long and hard to guess.
 
