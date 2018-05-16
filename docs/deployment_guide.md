@@ -57,7 +57,7 @@ for the NFS shares (may use LVM).
 - Cluster Manager: Ubuntu 16.04 LTS with reasonable resources
 -  Monitoring: Ubuntu 16.04 LTS with reasonable resources
 -  Tool Registry: Debian Jessie with reasonable resources and sizable disk space (e.g., a few hundred gigs)
--  Cluster Nodes: Debian Jessie with as much CPU and RAM as possible
+-  Cluster Nodes: Debian Jessie with backports and as much CPU and RAM as possible.
 
 Make sure you have your public key in `/root/.ssh/authorized_keys` of
 each and every of the hosts above. Also, make sure you can log on with

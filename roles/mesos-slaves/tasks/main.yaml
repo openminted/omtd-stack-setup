@@ -44,6 +44,6 @@
     - { content: "{{ inventory_hostname }}", dest: "/etc/mesos-slave/hostname" }
     - { content: "docker,mesos", dest: "/etc/mesos-slave/containerizers" }
     - { content: "5mins", dest: "/etc/mesos-slave/executor_registration_timeout" }
-    - { content: "/etc/mesos-slave/store/credentials.json", dest: "/etc/mesos-slave/credentials" }
+    - { content: "/etc/mesos-slave/store/credentials.json", dest: "/etc/mesos-slave/credential" }
   notify:
     - restart mesos-slave

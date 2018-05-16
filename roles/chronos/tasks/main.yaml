@@ -30,8 +30,9 @@
   with_items:
     - { content: "{{ inventory_hostname }}", dest: "/etc/chronos/conf/hostname" }
     - { content: "{{ chronos_http_user }}:{{ chronos_http_password }}", dest: "/etc/chronos/conf/http_credentials" }
-    - { content: "{{ chronos_secret }}", dest: "/etc/chronos/store/credentials" }
-    - { content: "/etc/chronos/store/credentials", dest: "/etc/chronos/conf/mesos_authentication_secret_file" }
+    - { content: "{{ chronos_secret }}", dest: "/etc/chronos/store/mesos_authentication_secret" }
+    - { content: "/etc/chronos/store/mesos_authentication_secret", dest: "/etc/chronos/mesos_authentication_secret_file" }
+    - { content: "{{ chronos_principal }}", dest: "/etc/chronos/mesos_authentication_principal" }
     - { content: "{{ chronos_http_port }}", dest: "/etc/chronos/conf/http_port" }
     - { content: "{{ chronos_https_port }}", dest: "/etc/chronos/conf/https_port" }
     - { content: "{{ cluster_name }}", dest: "/etc/chronos/conf/cluster_name" }

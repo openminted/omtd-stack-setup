@@ -1,2 +1,2 @@
 {# zk://{% for mesos_master in groups.mesos_masters %}{{ hostvars[mesos_master]['ansible_default_ipv4']['address'] }}:2181{% if not loop.last %},{% endif %}{% endfor %}/mesos #}
-zk://{{ groups.cluster_master }}:2181/mesos
+zk://localhost:2181/mesos
