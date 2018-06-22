@@ -42,6 +42,9 @@ executor_db_name: executor
 executor_db_user: executor
 executor_db_password: executor
 
+# Docker Registry
+registry_url: "{{ groups.docker_registry[0] }}"
+
 # Worker Runner Setup
 chronos_url: "{{ groups.cluster_master[0] }}:8080"
 chronos_workers: 12
