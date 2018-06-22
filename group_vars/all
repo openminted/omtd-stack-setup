@@ -20,6 +20,11 @@ chronos_http_password: chronospassword
 chronos_principal: "chronos.omtd"
 chronos_secret: "chronos.secret"
 
+# NFS shares
+executor_directory: /srv/executor
+data_share: "{{ executor_directory }}/database"
+tools_share: "{{ executor_directory }}/tools"
+
 # Communication between Mesos master and slaves
 # Replace with your node inventory hostnames and credentials
 #   add/remove nodes if needed
