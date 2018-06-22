@@ -11,6 +11,8 @@ cluster_name: openminted
 # Docker registry credentials
 registry_username: openminted
 registry_password: OpenMinTeD
+# Threashold to set high disk requirements
+cluster_threashold: 1024
 
 # Communication between Galaxy Executor and Chronos
 chronos_http_user: chronosadmin

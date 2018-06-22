@@ -21,14 +21,25 @@
     <destinations default="gear_1">
         <destination id="gear_1" runner="chronos">
             <param id="docker_enabled">true</param>
+            <!-- Do not remove containers when jobs are finished -->
+            <param id="docker_auto_remove">false</param>
+            <param id="docker_auto_rm">false</param>
             <!-- Directory which hosts working directories of Galaxy. -->
             <param id="volumes">{{ executor_directory }}/database</param>
             <param id="docker_memory">{{ gear_1_docker_memory }}</param>
             <param id="docker_cpu">{{ gear_1_docker_cpu }}</param>
             <param id="max_retries">{{ gear_1_max_retries }}</param>
+            <!-- private docker registry -->
+            <param id="reg_prefix">{{ registry_url }}</param>
+            <param id="reg_user">{{ registry_username  }}</param>
+            <param id="reg_pass">{{ registry_password }}</param>
+            <param id="cluster_threashold">{{ cluster_threashold }}</param>
         </destination>
         <destination id="gear_2" runner="chronos">
             <param id="docker_enabled">true</param>
+            <!-- Do not remove containers when jobs are finished -->
+            <param id="docker_auto_remove">false</param>
+            <param id="docker_auto_rm">false</param>
             <param id="volumes">{{ executor_directory }}/database</param>
             <param id="docker_memory">{{ gear_2_docker_memory }}</param>
             <param id="docker_cpu">{{ gear_2_docker_cpu }}</param>
